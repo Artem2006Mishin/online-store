@@ -1,0 +1,32 @@
+# === Global ===
+.idea/
+.vscode/
+.DS_Store
+node_modules/
+dist/
+build/
+target/
+*.log
+
+# === Frontend (React) ===
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# === Backend (Spring Boot) ===
+backend/target/
+backend/.mvn/
+backend/mvnw*
+backend/.env
+backend/application.properties
+backend/application.yml
+
+# === System ===
+*.class
+*.jar
+*.war
+*.iml
+*.tmp

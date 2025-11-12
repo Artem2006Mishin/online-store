@@ -1,0 +1,13 @@
+.menu {
+	padding-left: 24px;
+	display: flex;
+	align-items: center;
+	gap: 24px;
+}
+
+.menu__link {
+	font-family: Impact, sans-serif;
+	font-size: 32px;
+	text-decoration: none;
+	color: rgb(85, 85, 85);
+}

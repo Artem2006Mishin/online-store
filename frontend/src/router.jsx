@@ -1,8 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import Layout from './layout/Layout';
-import NewsPage from '../pages/NewsPage';
-import CatalogPage from '../pages/CatalogPage';
+import NewsPage from './pages/NewsPage/NewsPage';
+import CatalogPage from './pages/CatalogPage';
+import ErrorPage from './pages/ErrorPage';
 
 export const router = createBrowserRouter([
 	{
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
 			{
 				index: true,
 				element: <NewsPage />,
+				errorElement: <ErrorPage />,
 			},
 			{
 				path: 'catalog',
@@ -21,5 +23,4 @@ export const router = createBrowserRouter([
 	},
 ]);
 
-// TODO: добавить errorElement
 // TODO: заменить element: на lazy-loading

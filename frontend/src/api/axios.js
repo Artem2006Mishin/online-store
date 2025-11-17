@@ -5,5 +5,3 @@ const api = axios.create({
 });
 
 export default api;
-
-// TODO: добавлять функции для запроса на сервер здесь, а не в компонентах!

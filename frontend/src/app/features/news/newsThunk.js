@@ -6,7 +6,20 @@ export const getNews = createAsyncThunk('news/get', async (_, thunkAPI) => {
 		const response = await api.get('/');
 		return response.data;
 	} catch (error) {
-		return thunkAPI.rejectWithValue(error.response.data.message);
+		// запрос сделан, но ответа нет
+		if (error.request) {
+			return thunkAPI.rejectWithValue({
+				status: 'NETWORK_ERROR',
+				message:
+					'Сервер не доступен. Проверьте соединение или запустите backend.',
+			});
+		}
+
+		// обработка стандартной ошибки
+		return thunkAPI.rejectWithValue({
+			status: 'UNKNOWN_ERROR',
+			message: error.message,
+		});
 	}
 });
 

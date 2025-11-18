@@ -3,10 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './NewsPage.module.css';
 import { useEffect } from 'react';
 import { getNews } from '../../app/features/news/newsThunk';
+import Header from '../../components/Header/Header';
 
 const NewsPage = () => {
 	const news = useSelector((state) => state.news.news);
 	const status = useSelector((state) => state.news.status);
+	const error = useSelector((state) => state.news.error);
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -15,9 +18,20 @@ const NewsPage = () => {
 
 	return (
 		<section className={styles.container}>
-			{status === 'loading' && <div>loading news...</div>}
+			<Header title='Новости' />
+
+			{status === 'loading' && (
+				<div className={styles.loading}>
+					<p className={styles.loading__text}>loading news...</p>
+				</div>
+			)}
 			{status === 'success' && <NewsList news={news} />}
-			{status === 'error' && <div>error</div>}
+			{status === 'error' && (
+				<div className={styles.error}>
+					<h3 className={styles.error__title}>{error.status}</h3>
+					<p className={styles.error__text}>{error.message}</p>
+				</div>
+			)}
 		</section>
 	);
 };

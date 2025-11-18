@@ -20,7 +20,7 @@ const newsSlice = createSlice({
 			})
 			.addCase(getNews.rejected, (state, action) => {
 				state.status = 'error';
-				state.error = action.payload || action.error.message;
+				state.error = action.payload;
 			});
 	},
 });

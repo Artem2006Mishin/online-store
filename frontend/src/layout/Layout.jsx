@@ -1,23 +1,27 @@
 import { Outlet, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import styles from './Layout.module.css';
 import Navbar from '../components/Navbar/Navbar';
-import Header from '../components/Header/Header';
+import { switchingCatalog, switchingNews } from '../app/features/navbarSlice';
+import { useEffect } from 'react';
 
 const Layout = () => {
+	const dispatch = useDispatch();
 	const location = useLocation();
-	let headerData = {};
-	if (location.pathname.startsWith('/catalog')) {
-		headerData = { title: 'Каталог' };
-	} else {
-		headerData = { title: 'Новости' };
-	}
+
+	useEffect(() => {
+		if (location.pathname.startsWith('/catalog')) {
+			dispatch(switchingCatalog());
+		} else {
+			dispatch(switchingNews());
+		}
+	}, [location.pathname, dispatch]);
 
 	return (
 		<>
 			<header className={styles.header}>
 				<Navbar />
-				<Header {...headerData} />
 			</header>
 
 			<main className={styles.main}>

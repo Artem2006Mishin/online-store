@@ -2,8 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import Layout from './layout/Layout';
 import NewsPage from './pages/NewsPage/NewsPage';
-import CatalogPage from './pages/CatalogPage';
-import ErrorPage from './pages/ErrorPage';
+import CatalogPage from './pages/CatalogPage/CatalogPage';
 
 export const router = createBrowserRouter([
 	{
@@ -13,14 +12,27 @@ export const router = createBrowserRouter([
 			{
 				index: true,
 				element: <NewsPage />,
-				errorElement: <ErrorPage />,
 			},
 			{
 				path: 'catalog',
 				element: <CatalogPage />,
+				children: [
+					{
+						path: 'computers',
+						element: <div>пк</div>,
+					},
+					{
+						path: 'smartphones',
+						element: <div>телефоны</div>,
+					},
+					{
+						path: 'technic',
+						element: <div>прочая техника</div>,
+					},
+				],
 			},
 		],
 	},
 ]);
 
-// TODO: заменить element: на lazy-loading
+// TODO: добавить 404

@@ -1,0 +1,8 @@
+.loading {
+	display: flex;
+	justify-content: center;
+}
+
+.loading__text {
+	font-size: 32px;
+}

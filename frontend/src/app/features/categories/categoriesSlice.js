@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getNews } from './newsThunk';
+import { getCategories } from './categoriesThunk';
 import { handleGettingElements } from '../default/defaultExtraReducer';
 
-const newsSlice = createSlice({
-	name: 'news',
+const categoriesSlice = createSlice({
+	name: 'categories',
 	initialState: {
 		items: [],
 		status: 'idle',
@@ -11,8 +11,8 @@ const newsSlice = createSlice({
 	},
 	reducers: {},
 	extraReducers: (builder) => {
-		handleGettingElements(builder, getNews);
+		handleGettingElements(builder, getCategories);
 	},
 });
 
-export default newsSlice.reducer;
+export default categoriesSlice.reducer;

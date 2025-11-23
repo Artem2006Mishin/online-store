@@ -23,7 +23,7 @@ public class NewsController {
 
   @GetMapping
   public List<News> getNews() {
-    return newsRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    return this.newsRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
   }
 }
 

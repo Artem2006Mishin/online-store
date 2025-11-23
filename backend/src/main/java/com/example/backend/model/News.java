@@ -19,11 +19,13 @@ public class News {
 
   private String title;
   private String text;
+  private String imageURL;
 
   public News() {};
-  public News(String title, String text) {
+  public News(String title, String text, String imageURL) {
     this.title = title;
     this.text = text;
+    this.imageURL = imageURL;
   }
 
   public Long getId() {
@@ -46,4 +48,13 @@ public class News {
   public void setText(String text) {
     this.text = text;
   }
+
+  public String getImageURL() {
+    return imageURL;
+  }
+  public void setImageURL(String imageURL) {
+    this.imageURL = imageURL;
+  }
 }
+
+// TODO: добавить дату создания новости

@@ -1,8 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import Layout from './layout/Layout';
-import NewsPage from './pages/NewsPage/NewsPage';
-import CatalogPage from './pages/CatalogPage/CatalogPage';
+import Layout from './layout/Main/Layout';
+import NewsPage from './pages/NewsPage';
+import CatalogPage from './pages/CatalogPage';
+import CatalogLayout from './layout/Catalog/CatalogLayout';
 
 export const router = createBrowserRouter([
 	{
@@ -15,19 +16,15 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: 'catalog',
-				element: <CatalogPage />,
+				element: <CatalogLayout />,
 				children: [
 					{
-						path: 'computers',
-						element: <div>пк</div>,
+						index: true,
+						element: <CatalogPage />,
 					},
 					{
-						path: 'smartphones',
-						element: <div>телефоны</div>,
-					},
-					{
-						path: 'technic',
-						element: <div>прочая техника</div>,
+						path: ':slug-:id',
+						element: <div>продукты</div>,
 					},
 				],
 			},

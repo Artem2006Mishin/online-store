@@ -9,3 +9,21 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+
+header {
+	width: 1440px;
+	margin: 0 auto;
+	margin-bottom: 1rem;
+
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+main {
+	width: 1440px;
+	margin: 0 auto;
+
+	display: flex;
+}

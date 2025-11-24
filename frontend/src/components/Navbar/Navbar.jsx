@@ -10,6 +10,9 @@ const Navbar = () => {
 			<NavLink className={styles.menu__link} to='/catalog'>
 				КАТАЛОГ
 			</NavLink>
+			<NavLink className={styles.menu__link} to='/authentication'>
+				ВОЙТИ | ЗАРЕГИСТРИРОВАТЬСЯ
+			</NavLink>
 		</nav>
 	);
 };

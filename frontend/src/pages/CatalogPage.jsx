@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 import { getCategories } from '../app/features/categories/categoriesThunk';
-import Header from '../components/Header/Header';
 import List from '../components/List/List';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import Section from '../components/Section/Section';
+import Card from '../components/Card/Card';
 
 const CatalogPage = () => {
 	const items = useSelector((state) => state.categories.items);
@@ -21,10 +21,22 @@ const CatalogPage = () => {
 	return (
 		<Section>
 			{status === 'loading' && <Loading title={'каталог'} />}
-			{status === 'success' && <List dataList={items} cardType={'catalog'} />}
+			{status === 'success' && (
+				<List
+					dataList={items}
+					renderItem={(data) => (
+						<Card key={data.id} data={data} type='catalog' />
+					)}
+				/>
+			)}
 			{status === 'error' && <Errors error={error} />}
 		</Section>
 	);
 };
 
 export default CatalogPage;
+
+{
+	/* ; */
+}
+// cardType={}

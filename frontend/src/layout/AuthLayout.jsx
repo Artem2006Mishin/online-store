@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import Section from '../components/Section/Section';
 
-const AuthenticationLayout = () => {
+const AuthLayout = () => {
 	return (
 		<Section>
 			<Header title='Аутентификация' />
@@ -11,4 +11,4 @@ const AuthenticationLayout = () => {
 	);
 };
 
-export default AuthenticationLayout;
+export default AuthLayout;

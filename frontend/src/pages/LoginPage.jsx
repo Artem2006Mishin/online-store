@@ -1,7 +1,11 @@
-import { loginSchema } from '../components/schema';
 import Input from '../components/Input/Input';
 import Form from '../components/Form/Form';
 import Button from '../components/Button/Button';
+import { loginSchema } from '../components/schema';
+import { saveUser } from '../app/features/users/usersThunk';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const LoginPage = () => {
 	const defaultValues = {
@@ -9,9 +13,16 @@ const LoginPage = () => {
 		password: '',
 	};
 
-	const onSubmit = async (data) => {
-		console.log(data);
+	const dispatch = useDispatch();
+	const onSubmit = (data) => {
+		dispatch(saveUser({ url: '/auth/login', userData: data }));
 	};
+
+	const navigate = useNavigate();
+	const status = useSelector((state) => state.users.status);
+	useEffect(() => {
+		if (status === 'success') navigate('/profile', { replace: true });
+	}, [status, navigate]);
 
 	return (
 		<Form
@@ -23,6 +34,7 @@ const LoginPage = () => {
 			<Input label='Пароль' name='password' type='password' />
 
 			<Button type='submit' label='Войти' />
+			<Button type='button' label='Еще не зарегистрирован?' to='/auth/reg' />
 		</Form>
 	);
 };

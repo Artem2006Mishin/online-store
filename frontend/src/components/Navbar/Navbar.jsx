@@ -1,18 +1,14 @@
 import { NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
-const Navbar = () => {
+const Navbar = ({ data }) => {
 	return (
 		<nav className={styles.menu}>
-			<NavLink className={styles.menu__link} to='/'>
-				НОВОСТИ
-			</NavLink>
-			<NavLink className={styles.menu__link} to='/catalog'>
-				КАТАЛОГ
-			</NavLink>
-			<NavLink className={styles.menu__link} to='/authentication'>
-				ВОЙТИ | ЗАРЕГИСТРИРОВАТЬСЯ
-			</NavLink>
+			{data.map((elem) => (
+				<NavLink key={elem.text} className={styles.menu__link} to={elem.to}>
+					{elem.text}
+				</NavLink>
+			))}
 		</nav>
 	);
 };

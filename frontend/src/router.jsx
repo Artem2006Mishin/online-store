@@ -4,9 +4,10 @@ import Layout from './layout/Layout';
 import NewsPage from './pages/NewsPage';
 import CatalogPage from './pages/CatalogPage';
 import CatalogLayout from './layout/CatalogLayout';
-import AuthenticationLayout from './layout/AuthenticationLayout';
 import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
+import AuthLayout from './layout/AuthLayout';
+import ProfilePage from './pages/ProfilePage';
 
 export const router = createBrowserRouter([
 	{
@@ -32,21 +33,26 @@ export const router = createBrowserRouter([
 				],
 			},
 			{
-				path: 'authentication',
-				element: <AuthenticationLayout />,
+				path: 'auth',
+				element: <AuthLayout />,
 				children: [
 					{
 						index: true,
 						element: <LoginPage />,
 					},
 					{
-						path: 'registration',
+						path: 'reg',
 						element: <RegistrationPage />,
 					},
 				],
+			},
+			{
+				path: 'profile',
+				element: <ProfilePage />,
 			},
 		],
 	},
 ]);
 
 // TODO: добавить 404
+// TODO: заменить на @RequestMapping("/auth")

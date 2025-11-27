@@ -1,0 +1,14 @@
+.detail {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.detail__title {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.detail__value {
+	font-size: 24px;
+}

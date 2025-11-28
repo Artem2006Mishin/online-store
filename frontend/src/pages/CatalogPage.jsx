@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import { getCategories } from '../app/features/categories/categoriesThunk';
@@ -18,6 +19,11 @@ const CatalogPage = () => {
 		if (status === 'idle') dispatch(getCategories());
 	}, [status, dispatch]);
 
+	const navigate = useNavigate();
+	const handleClick = (id) => {
+		navigate(`/catalog/${id}`);
+	};
+
 	return (
 		<Section>
 			{status === 'loading' && <Loading title={'каталог'} />}
@@ -25,7 +31,12 @@ const CatalogPage = () => {
 				<List
 					dataList={items}
 					renderItem={(data) => (
-						<Card key={data.id} data={data} type='catalog' />
+						<Card
+							key={data.id}
+							data={data}
+							type='catalog'
+							onClick={() => handleClick(data.id)}
+						/>
 					)}
 				/>
 			)}

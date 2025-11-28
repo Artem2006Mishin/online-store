@@ -8,6 +8,7 @@ import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
 import AuthLayout from './layout/AuthLayout';
 import ProfilePage from './pages/ProfilePage';
+import ProductPage from './pages/ProductPage';
 
 export const router = createBrowserRouter([
 	{
@@ -27,8 +28,8 @@ export const router = createBrowserRouter([
 						element: <CatalogPage />,
 					},
 					{
-						path: ':slug-:id',
-						element: <div>продукты</div>,
+						path: ':id',
+						element: <ProductPage />,
 					},
 				],
 			},

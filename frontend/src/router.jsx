@@ -56,4 +56,3 @@ export const router = createBrowserRouter([
 ]);
 
 // TODO: добавить 404
-// TODO: заменить на @RequestMapping("/auth")

@@ -23,7 +23,7 @@ public class UserController {
     this.encoder = encoder;
   }
 
-  @PostMapping("/register") // TODO: сделать другой dto для регистрации, типа UserRegisterDto
+  @PostMapping("/register") 
   public ResponseEntity<UserResponseDto> register(@RequestBody UserDto request) { 
     if (repository.findByEmail(request.getEmail()).isPresent()) {
       return ResponseEntity.status(409).body(null); // email уже занят
@@ -33,12 +33,12 @@ public class UserController {
     User newUser = new User(request.getEmail(), encodedPassword);
     repository.save(newUser);
 
-    String token = "test_token"; // TODO: сделать нормальный JWT токен
+    String token = "test_token";
     UserResponseDto responseData = new UserResponseDto(newUser.getEmail(), token);
     return ResponseEntity.status(201).body(responseData); // успешно создан
   }
 
-  @PostMapping("/login") // TODO: сделать другой dto для регистрации, типа UserLoginDto
+  @PostMapping("/login")
   public ResponseEntity<UserResponseDto> login(@RequestBody UserDto request) {
     Optional<User> findUser = repository.findByEmail(request.getEmail());
     if (findUser.isEmpty()) {
@@ -50,9 +50,23 @@ public class UserController {
       return ResponseEntity.status(401).body(null); // неправильный пароль
     }
 
-    String token = "test_token"; // TODO: сделать нормальный JWT токен
+    String token = "test_token";
     UserResponseDto response = new UserResponseDto(user.getEmail(), token);
 
     return ResponseEntity.status(200).body(response); // успех в логине!!!!!
   }
 }
+
+/*
+  FIXME: надо сделать разные DTO для логина и регистрации. 
+
+  объясню почему: сейчас у пользователя есть только поля email и password.
+  и когда я отправляю данные с фронта с email и password, то мой 
+  @RequestBody парсит json и получает пользователя. 
+
+  но когда у пользователя будет больше полей (фотка и кол-во посещений) при 
+  регистрации я отправлю json с такими данными, то @RequestBody для register создаст такого пользователя основе них, а вот уже Login уже не сможет уже так сделать, так 
+  как у него будут только email password.
+*/
+
+// FIXME: сделать нормальный JWT токен а не говно, что сейчас.

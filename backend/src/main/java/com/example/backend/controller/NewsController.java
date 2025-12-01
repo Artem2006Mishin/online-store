@@ -26,5 +26,3 @@ public class NewsController {
     return this.newsRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
   }
 }
-
-// TODO: сделать для @PostMapping для модератора

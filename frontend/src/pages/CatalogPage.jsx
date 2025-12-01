@@ -8,11 +8,12 @@ import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import Section from '../components/Section/Section';
 import Card from '../components/Card/Card';
+import Header from '../components/Header/Header';
 
 const CatalogPage = () => {
-	const items = useSelector((state) => state.categories.items);
-	const status = useSelector((state) => state.categories.status);
-	const error = useSelector((state) => state.categories.error);
+	const items = useSelector(state => state.categories.items);
+	const status = useSelector(state => state.categories.status);
+	const error = useSelector(state => state.categories.error);
 
 	const dispatch = useDispatch();
 	useEffect(() => {
@@ -20,17 +21,19 @@ const CatalogPage = () => {
 	}, [status, dispatch]);
 
 	const navigate = useNavigate();
-	const handleClick = (id) => {
+	const handleClick = id => {
 		navigate(`/catalog/${id}`);
 	};
 
 	return (
 		<Section>
+			<Header title='Каталог' />
+
 			{status === 'loading' && <Loading title={'каталог'} />}
 			{status === 'success' && (
 				<List
 					dataList={items}
-					renderItem={(data) => (
+					renderItem={data => (
 						<Card
 							key={data.id}
 							data={data}
@@ -46,8 +49,3 @@ const CatalogPage = () => {
 };
 
 export default CatalogPage;
-
-{
-	/* ; */
-}
-// cardType={}

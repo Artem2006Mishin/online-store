@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar/Navbar';
 import { useSelector } from 'react-redux';
 
 const Layout = () => {
-	const token = useSelector((state) => state.users.items.token);
+	const token = useSelector(state => state.users.items.token);
 
 	const unregisteredUserData = [
 		{ to: '/', text: 'НОВОСТИ' },
@@ -33,4 +33,4 @@ const Layout = () => {
 
 export default Layout;
 
-// TODO: оптимизировать логику рендера navbar
+// FIXME: оптимизировать логику рендера navbar. спросить у такашкина.

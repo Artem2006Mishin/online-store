@@ -17,7 +17,7 @@ const CatalogPage = () => {
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-		if (status === 'idle') dispatch(getCategories());
+		if (status === 'idle') dispatch(getCategories('/catalog'));
 	}, [status, dispatch]);
 
 	const navigate = useNavigate();

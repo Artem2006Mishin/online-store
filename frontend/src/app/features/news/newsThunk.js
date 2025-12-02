@@ -1,2 +1,4 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getElements } from '../default/defaultThunk';
-export const getNews = getElements('news/get', '/');
+
+export const getNews = createAsyncThunk('news/get', getElements);

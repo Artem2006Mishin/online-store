@@ -10,14 +10,14 @@ import Section from '../components/Section/Section';
 import Card from '../components/Card/Card';
 
 const NewsPage = () => {
-	const items = useSelector((state) => state.news.items);
-	const status = useSelector((state) => state.news.status);
-	const error = useSelector((state) => state.news.error);
+	const items = useSelector(state => state.news.items);
+	const status = useSelector(state => state.news.status);
+	const error = useSelector(state => state.news.error);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (status === 'idle') dispatch(getNews());
+		if (status === 'idle') dispatch(getNews('/'));
 	}, [status, dispatch]);
 
 	return (
@@ -28,7 +28,7 @@ const NewsPage = () => {
 			{status === 'success' && (
 				<List
 					dataList={items}
-					renderItem={(data) => <Card key={data.id} data={data} type='news' />}
+					renderItem={data => <Card key={data.id} data={data} type='news' />}
 				/>
 			)}
 			{status === 'error' && <Errors error={error} />}

@@ -1,2 +1,4 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { getElements } from '../default/defaultThunk';
-export const getCategories = getElements('categories/get', '/catalog');
+
+export const getCategories = createAsyncThunk('categories/get', getElements);

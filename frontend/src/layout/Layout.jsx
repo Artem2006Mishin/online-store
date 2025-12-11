@@ -1,9 +1,10 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 const Layout = () => {
-	const token = useSelector(state => state.users.items.token);
+	const token = useSelector((state) => state.users.items.token);
 
 	const unregisteredUserData = [
 		{ to: '/', text: 'НОВОСТИ' },
@@ -16,6 +17,10 @@ const Layout = () => {
 		{ to: '/catalog', text: 'КАТАЛОГ' },
 		{ to: '/profile', text: 'ПРОФИЛЬ' },
 	];
+
+	// useEffect(
+
+	// );
 
 	return (
 		<>

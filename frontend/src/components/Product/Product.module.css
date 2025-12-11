@@ -1,0 +1,56 @@
+.productCard {
+	width: 250px;
+	min-height: 430px;
+	border: 1px solid #ccc;
+	border-radius: 20px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.productCard img {
+	width: 100%;
+	height: 250px;
+	padding: 10px;
+	display: block;
+}
+
+.productInfo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.productInfo h3 {
+	font-size: 20px;
+	font-weight: 600;
+	margin: 0 0 5px;
+}
+
+.productInfo p {
+	width: 70%;
+	margin: 0 0 15px;
+}
+
+.productBtn {
+	width: 120px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+}
+
+.productBtn span {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.productBtn button {
+	padding: 8px 16px;
+	background: #000;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+}

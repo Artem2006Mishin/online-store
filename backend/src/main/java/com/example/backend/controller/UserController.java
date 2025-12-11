@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
   private UserRepository repository;
@@ -23,7 +22,7 @@ public class UserController {
     this.encoder = encoder;
   }
 
-  @PostMapping("/register") 
+  @PostMapping("/auth/register") 
   public ResponseEntity<UserResponseDto> register(@RequestBody UserDto request) { 
     if (repository.findByEmail(request.getEmail()).isPresent()) {
       return ResponseEntity.status(409).body(null); // email уже занят
@@ -38,7 +37,7 @@ public class UserController {
     return ResponseEntity.status(201).body(responseData); // успешно создан
   }
 
-  @PostMapping("/login")
+  @PostMapping("/auth/login")
   public ResponseEntity<UserResponseDto> login(@RequestBody UserDto request) {
     Optional<User> findUser = repository.findByEmail(request.getEmail());
     if (findUser.isEmpty()) {

@@ -6,10 +6,12 @@ import Section from '../components/Section/Section';
 import Header from '../components/Header/Header';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
+import List from '../components/List/List';
+import Product from '../components/Product/Product';
 
 const ProductPage = () => {
 	const { id } = useParams();
-	const { status, items, error } = useSelector(state => state.products);
+	const { status, items, error } = useSelector((state) => state.products);
 	const [title, setTitle] = useState('название категории');
 
 	const dispatch = useDispatch();
@@ -35,12 +37,18 @@ const ProductPage = () => {
 	// Как это надо сделать знает такташкин!!
 
 	return (
-		<Section>
+		<>
 			<Header title={title} />
 
+			{status === 'success' && (
+				<List
+					dataList={items}
+					renderItem={(data) => <Product key={data.id} data={data} />}
+				/>
+			)}
 			{status === 'loading' && <Loading title={'каталог'} />}
 			{status === 'error' && <Errors error={error} />}
-		</Section>
+		</>
 	);
 };
 

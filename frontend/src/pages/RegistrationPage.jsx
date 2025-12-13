@@ -6,6 +6,7 @@ import Button from '../components/Button/Button';
 import { saveUser } from '../app/features/users/usersThunk';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import Loading from '../components/Loading/Loading'; 
 
 const RegistrationPage = () => {
 	const defaultValues = {

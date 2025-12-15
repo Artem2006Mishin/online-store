@@ -1,32 +1,29 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+// import { useSelector } from 'react-redux';
 
 const Layout = () => {
-	const token = useSelector((state) => state.users.items.token);
+	// const { token } = useSelector((state) => state.userData.userData);
+
 
 	const unregisteredUserData = [
 		{ to: '/', text: 'НОВОСТИ' },
-		{ to: '/catalog', text: 'КАТАЛОГ' },
+		{ to: '/categories', text: 'КАТАЛОГ' },
 		{ to: '/auth', text: 'ВОЙТИ В АККАУНТ' },
 	];
 
-	const registeredUserData = [
-		{ to: '/', text: 'НОВОСТИ' },
-		{ to: '/catalog', text: 'КАТАЛОГ' },
-		{ to: '/profile', text: 'ПРОФИЛЬ' },
-	];
-
-	// useEffect(
-
-	// );
+	// const registeredUserData = [
+	// 	{ to: '/', text: 'НОВОСТИ' },
+	// 	{ to: '/categories', text: 'КАТАЛОГ' },
+	// 	{ to: '/profile', text: 'ПРОФИЛЬ' },
+	// ];
 
 	return (
 		<>
 			<header>
-				{!token && <Navbar data={unregisteredUserData} />}
-				{token && <Navbar data={registeredUserData} />}
+        <Navbar data={unregisteredUserData} />
+				{/*{!token && }*/}
+				{/*{token && <Navbar data={registeredUserData} />}*/}
 			</header>
 
 			<main>
@@ -37,5 +34,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
-// FIXME: оптимизировать логику рендера navbar. спросить у такашкина.

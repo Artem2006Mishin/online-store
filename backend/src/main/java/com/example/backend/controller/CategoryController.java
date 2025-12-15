@@ -8,7 +8,7 @@ import com.example.backend.repository.CategoryRepository;
 import java.util.List;
 
 @RestController
-@RequestMapping("/catalog")
+@RequestMapping("categories")
 @CrossOrigin(origins = "http://localhost:5173")
 public class CategoryController {
   private final CategoryRepository repository;
@@ -17,7 +17,7 @@ public class CategoryController {
     this.repository = repository;
   }
   
-  @GetMapping
+  @GetMapping("/getCategories")
   public List<Category> getAll() {
     return this.repository.findAll();
   }

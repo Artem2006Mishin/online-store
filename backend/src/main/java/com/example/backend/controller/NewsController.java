@@ -12,7 +12,7 @@ import com.example.backend.model.News;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("news")
 @CrossOrigin(origins = "http://localhost:5173")
 public class NewsController {
   private final NewsRepository newsRepository;
@@ -21,7 +21,7 @@ public class NewsController {
     this.newsRepository = newsRepository;
   }
 
-  @GetMapping
+  @GetMapping("/getNews")
   public List<News> getNews() {
     return this.newsRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
   }

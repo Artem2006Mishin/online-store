@@ -3,7 +3,7 @@ import Form from '../components/Form/Form';
 import Button from '../components/Button/Button';
 import Loading from '../components/Loading/Loading';
 import { loginSchema } from '../components/schema';
-import { saveUser } from '../app/features/users/usersThunk';
+import {authUserThunk} from '../app/features/users/usersThunk';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -16,7 +16,7 @@ const LoginPage = () => {
 
 	const dispatch = useDispatch();
 	const onSubmit = data => {
-		dispatch(saveUser({ url: '/auth/login', userData: data }));
+		dispatch(authUserThunk({ url: 'login', userData: data }));
 	};
 
 	const navigate = useNavigate();

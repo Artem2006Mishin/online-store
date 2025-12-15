@@ -1,58 +1,58 @@
-import { createBrowserRouter } from 'react-router-dom';
+import {createBrowserRouter} from 'react-router-dom';
 
 import Layout from './layout/Layout';
 import NewsPage from './pages/NewsPage';
-import CatalogPage from './pages/CatalogPage';
-import CatalogLayout from './layout/CatalogLayout';
-import RegistrationPage from './pages/RegistrationPage';
-import LoginPage from './pages/LoginPage';
+import CategoriesLayout from './layout/CategoriesLayout.jsx';
+import CategoriesPage from './pages/CategoriesPage.jsx';
+import ProductsPage from './pages/ProductsPage.jsx';
 import AuthLayout from './layout/AuthLayout';
+import LoginPage from './pages/LoginPage';
+import RegistrationPage from './pages/RegistrationPage';
 import ProfilePage from './pages/ProfilePage';
-import ProductPage from './pages/ProductPage';
 
 export const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <Layout />,
-		children: [
-			{
-				index: true,
-				element: <NewsPage />,
-			},
-			{
-				path: 'catalog',
-				element: <CatalogLayout />,
-				children: [
-					{
-						index: true,
-						element: <CatalogPage />,
-					},
-					{
-						path: ':id',
-						element: <ProductPage />,
-					},
-				],
-			},
-			{
-				path: 'auth',
-				element: <AuthLayout />,
-				children: [
-					{
-						index: true,
-						element: <LoginPage />,
-					},
-					{
-						path: 'reg',
-						element: <RegistrationPage />,
-					},
-				],
-			},
-			{
-				path: 'profile',
-				element: <ProfilePage />,
-			},
-		],
-	},
+  {
+    path: '/',
+    element: <Layout/>,
+    children: [
+      {
+        index: true,
+        element: <NewsPage/>,
+      },
+      {
+        path: 'categories',
+        element: <CategoriesLayout/>,
+        children: [
+          {
+            index: true,
+            element: <CategoriesPage/>,
+          },
+          {
+            path: ':name',
+            element: <ProductsPage/>,
+          },
+        ],
+      },
+      {
+        path: 'auth',
+        element: <AuthLayout/>,
+        children: [
+          {
+            index: true,
+            element: <LoginPage/>,
+          },
+          {
+            path: 'reg',
+            element: <RegistrationPage/>,
+          },
+        ],
+      },
+      {
+        path: 'profile',
+        element: <ProfilePage/>,
+      },
+    ],
+  },
 ]);
 
-// TODO: добавить 404
+// todo: добавить 404

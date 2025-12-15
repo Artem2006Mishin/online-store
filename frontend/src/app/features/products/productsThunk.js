@@ -1,14 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../../api/axios';
 
-export const getProducts = createAsyncThunk(
-	'/products/get',
+export const getProductsThunk = createAsyncThunk(
+	'products/getProducts',
 	async (payload, thunkAPI) => {
 		try {
-			const response = await api.get(`/catalog/${payload}`);
+			const response = await api.get(`products/getProducts/${payload}`);
 			return response.data;
 		} catch (error) {
-			if (error.request) {
+			if (error.isNetworkError) {
 				return thunkAPI.rejectWithValue({
 					status: 'NETWORK_ERROR',
 					message:

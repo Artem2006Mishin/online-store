@@ -1,18 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getProducts } from './productsThunk';
-import { handleGettingElements } from '../default/defaultExtraReducer';
+import {getProductsThunk} from "./productsThunk.js";
 
 const productSlice = createSlice({
 	name: 'products',
 	initialState: {
-		items: [],
-		status: 'idle',
+		productsList: [],
+		status: 'inactive',
 		error: null,
 	},
-	reducers: {},
-	extraReducers: (builder) => {
-		handleGettingElements(builder, getProducts);
-	},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getProductsThunk.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getProductsThunk.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.productsList = action.payload;
+      })
+      .addCase(getProductsThunk.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.payload;
+      });
+  },
 });
 
 export default productSlice.reducer;

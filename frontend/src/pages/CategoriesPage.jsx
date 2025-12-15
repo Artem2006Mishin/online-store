@@ -2,26 +2,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import { getCategories } from '../app/features/categories/categoriesThunk';
+import { getCategoriesThunk } from '../app/features/categories/categoriesThunk';
 import List from '../components/List/List';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import Card from '../components/Card/Card';
 import Header from '../components/Header/Header';
 
-const CatalogPage = () => {
-	const items = useSelector((state) => state.categories.items);
-	const status = useSelector((state) => state.categories.status);
-	const error = useSelector((state) => state.categories.error);
+const CategoriesPage = () => {
+  const {status, categoriesList, error} = useSelector(state => state.categories);
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-		if (status === 'idle') dispatch(getCategories('/catalog'));
+		if (status === 'inactive') dispatch(getCategoriesThunk());
 	}, [status, dispatch]);
 
 	const navigate = useNavigate();
-	const handleClick = (id) => {
-		navigate(`/catalog/${id}`);
+	const handleClick = (title) => {
+		navigate(`/categories/${title}`);
 	};
 
 	return (
@@ -29,22 +27,23 @@ const CatalogPage = () => {
 			<Header title='Каталог' />
 
 			{status === 'loading' && <Loading title={'каталог'} />}
+      {status === 'error' && <Errors error={error} />}
+
 			{status === 'success' && (
 				<List
-					dataList={items}
+					dataList={categoriesList}
 					renderItem={(data) => (
 						<Card
 							key={data.id}
 							data={data}
 							type='catalog'
-							onClick={() => handleClick(data.id)}
+							onClick={() => handleClick(data.title)}
 						/>
 					)}
 				/>
 			)}
-			{status === 'error' && <Errors error={error} />}
 		</>
 	);
 };
 
-export default CatalogPage;
+export default CategoriesPage;

@@ -1,18 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { handleGettingElements } from '../default/defaultExtraReducer';
-import { saveUser } from './usersThunk';
+import {authUserThunk} from "./usersThunk.js";
 
-const usersSlice = createSlice({
+const userSlice = createSlice({
 	name: 'users',
 	initialState: {
-		items: {},
-		status: 'idle',
+		userData: {},
+		status: 'inactive',
 		error: null,
 	},
-	reducers: {},
-	extraReducers: (builder) => {
-		handleGettingElements(builder, saveUser);
-	},
+  extraReducers: (builder) => {
+    builder
+      .addCase(authUserThunk.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(authUserThunk.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.userData = action.payload;
+      })
+      .addCase(authUserThunk.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.payload;
+      });
+  },
 });
 
-export default usersSlice.reducer;
+export default userSlice.reducer;

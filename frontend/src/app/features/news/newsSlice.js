@@ -1,17 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getNews } from './newsThunk';
-import { handleGettingElements } from '../default/defaultExtraReducer';
+import {getNewsThunk} from "./newsThunk.js";
 
 const newsSlice = createSlice({
 	name: 'news',
 	initialState: {
-		items: [],
-		status: 'idle',
+		newsList: [],
+		status: 'inactive',
 		error: null,
 	},
-	reducers: {},
 	extraReducers: (builder) => {
-		handleGettingElements(builder, getNews);
+    builder
+      .addCase(getNewsThunk.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getNewsThunk.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.newsList = action.payload;
+      })
+      .addCase(getNewsThunk.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.payload;
+      });
 	},
 });
 

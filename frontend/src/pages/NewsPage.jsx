@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
-import { getNews } from '../app/features/news/newsThunk';
+import { getNewsThunk } from '../app/features/news/newsThunk';
+
 import Header from '../components/Header/Header';
 import List from '../components/List/List';
 import Loading from '../components/Loading/Loading';
@@ -10,14 +11,11 @@ import Section from '../components/Section/Section';
 import Card from '../components/Card/Card';
 
 const NewsPage = () => {
-	const items = useSelector(state => state.news.items);
-	const status = useSelector(state => state.news.status);
-	const error = useSelector(state => state.news.error);
-
+	const {status, newsList, error} = useSelector(state => state.news);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (status === 'idle') dispatch(getNews('/'));
+		if (status === 'inactive') dispatch(getNewsThunk());
 	}, [status, dispatch]);
 
 	return (
@@ -25,13 +23,14 @@ const NewsPage = () => {
 			<Header title='Новости' />
 
 			{status === 'loading' && <Loading title={'новости'} />}
+      {status === 'error' && <Errors error={error} />}
+
 			{status === 'success' && (
 				<List
-					dataList={items}
+					dataList={newsList}
 					renderItem={data => <Card key={data.id} data={data} type='news' />}
 				/>
 			)}
-			{status === 'error' && <Errors error={error} />}
 		</Section>
 	);
 };

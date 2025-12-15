@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Section from '../components/Section/Section';
 
-const CatalogLayout = () => {
+const CategoriesLayout = () => {
 	return (
 		<Section>
 			<Outlet />
@@ -9,6 +9,6 @@ const CatalogLayout = () => {
 	);
 };
 
-export default CatalogLayout;
+export default CategoriesLayout;
 
 // TODO: здесь будет рендериться корзина товаров

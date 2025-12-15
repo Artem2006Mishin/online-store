@@ -1,56 +1,74 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/axios';
-import { getElements } from '../default/defaultThunk';
 
-export const saveUser = createAsyncThunk(
-	'user/saveUser',
-	async ({ url, userData }, thunkAPI) => {
-		try {
-			const response = await api.post(url, userData, { skipAuth: true });
-			localStorage.setItem('token', response.data.token); // TODO: когда будет настоящий
-			// JWT-токен, то нужно будет сериализовать его в json.
-			return response.data;
-		} catch (error) {
-			// ответ есть
-			if (error.response) {
-				if (error.response.status == 401) {
-					return thunkAPI.rejectWithValue({
-						status: 'INVALID_PASSWORD',
-						message: 'Неправильный пароль',
-					});
-				}
+export const authUserThunk = createAsyncThunk(
+  'user/authUser',
+  async ({url, userData}, thunkAPI) => {
+    try {
+      const response = await api.post(`auth/${url}`, userData, {skipAuth: true});
+      localStorage.setItem('token', response.data.token) // todo: когда будет настоящий JWT-токен, то нужно будет сериализовать его в json.
 
-				if (error.response.status == 404) {
-					return thunkAPI.rejectWithValue({
-						status: 'EMAIL_NOT_FOUND',
-						message: 'Пользователь с таким email не найден',
-					});
-				}
+      console.log(response.data);
 
-				if (error.response.status == 409) {
-					return thunkAPI.rejectWithValue({
-						status: 'EMAIL_BUSY',
-						message: 'Пользователь с таким email уже существует',
-					});
-				}
-			}
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          return thunkAPI.rejectWithValue({
+            status: 'INVALID_PASSWORD',
+            message: 'Неправильный пароль',
+          });
+        }
 
-			// запрос есть
-			if (error.request) {
-				return thunkAPI.rejectWithValue({
-					status: 'NETWORK_ERROR',
-					message:
-						'Сервер не доступен. Проверьте соединение или запустите backend.',
-				});
-			}
+        if (error.response.status === 404) {
+          return thunkAPI.rejectWithValue({
+            status: 'EMAIL_NOT_FOUND',
+            message: 'Пользователь с таким email не найден',
+          });
+        }
 
-			// обработка стандартной ошибки
-			return thunkAPI.rejectWithValue({
-				status: 'UNKNOWN_ERROR',
-				message: error.message,
-			});
-		}
-	}
+        if (error.response.status === 409) {
+          return thunkAPI.rejectWithValue({
+            status: 'EMAIL_BUSY',
+            message: 'Пользователь с таким email уже существует',
+          });
+        }
+      }
+
+      if (error.request) {
+        return thunkAPI.rejectWithValue({
+          status: 'NETWORK_ERROR',
+          message:
+            'Сервер не доступен. Проверьте соединение или запустите backend.',
+        });
+      }
+
+      return thunkAPI.rejectWithValue({
+        status: 'UNKNOWN_ERROR',
+        message: error.message,
+      });
+    }
+  }
 );
 
-export const getUser = createAsyncThunk('user/getUser', getElements);
+// export const getUserThunk = createAsyncThunk(
+//   'user/authUser',
+//   async (payload, thunkAPI) => {
+//   try {
+//     const response = await api.get(`products/getProducts/${payload}`);
+//     return response.data;
+//   } catch (error) {
+//     if (error.isNetworkError) {
+//       return thunkAPI.rejectWithValue({
+//         status: 'NETWORK_ERROR',
+//         message:
+//           'Сервер не доступен. Проверьте соединение или запустите backend.',
+//       });
+//     }
+//
+//     return thunkAPI.rejectWithValue({
+//       status: 'UNKNOWN_ERROR',
+//       message: error.message,
+//     });
+//   }
+// });

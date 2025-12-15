@@ -8,7 +8,7 @@ import com.example.backend.model.Product;
 import com.example.backend.repository.ProductRepository;
 
 @RestController
-@RequestMapping("/catalog/{id}")
+@RequestMapping("products")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
   private final ProductRepository repository;
@@ -17,7 +17,7 @@ public class ProductController {
     this.repository = repository;
   }
   
-  @GetMapping
+  @GetMapping("/getProducts/{id}")
   public List<Product> getProductByCategory(@PathVariable Long id) {
     return repository.findByCategoryId(id);
   }

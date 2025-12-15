@@ -1,18 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getCategories } from './categoriesThunk';
-import { handleGettingElements } from '../default/defaultExtraReducer';
+import {getCategoriesThunk} from './categoriesThunk';
 
 const categoriesSlice = createSlice({
 	name: 'categories',
 	initialState: {
-		items: [],
-		status: 'idle',
+    categoriesList: [],
+		status: 'inactive',
 		error: null,
 	},
-	reducers: {},
-	extraReducers: (builder) => {
-		handleGettingElements(builder, getCategories);
-	},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCategoriesThunk.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getCategoriesThunk.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.categoriesList = action.payload;
+      })
+      .addCase(getCategoriesThunk.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.payload;
+      });
+  },
 });
 
 export default categoriesSlice.reducer;

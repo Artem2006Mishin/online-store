@@ -18,7 +18,10 @@ api.interceptors.request.use(config => {
 export default api;
 
 api.interceptors.response.use(
-  response => response,
+  response => {
+    // console.log(response);
+    return response;
+  },
   error => {
     if (error.request && !error.response) error.isNetworkError = true;
     return Promise.reject(error);

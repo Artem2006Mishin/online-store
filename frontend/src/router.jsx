@@ -9,6 +9,7 @@ import AuthLayout from './layout/AuthLayout';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ProfilePage from './pages/ProfilePage';
+import OrderPage from "./pages/OrderPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
         path: 'profile',
         element: <ProfilePage/>,
       },
+      {
+        path: 'order',
+        element: <OrderPage/>,
+      }
     ],
   },
 ]);

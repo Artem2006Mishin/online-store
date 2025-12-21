@@ -12,18 +12,10 @@ const Layout = () => {
 		{ to: '/auth', text: 'ВОЙТИ В АККАУНТ' },
 	];
 
-	// const registeredUserData = [
-	// 	{ to: '/', text: 'НОВОСТИ' },
-	// 	{ to: '/categories', text: 'КАТАЛОГ' },
-	// 	{ to: '/profile', text: 'ПРОФИЛЬ' },
-	// ];
-
 	return (
 		<>
 			<header>
         <Navbar data={unregisteredUserData} />
-				{/*{!token && }*/}
-				{/*{token && <Navbar data={registeredUserData} />}*/}
 			</header>
 
 			<main>

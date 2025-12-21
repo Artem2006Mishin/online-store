@@ -24,9 +24,7 @@ const CategoriesPage = () => {
 
 	return (
 		<>
-			<Header title='Каталог' />
-
-			{status === 'loading' && <Loading title={'каталог'} />}
+		{status === 'loading' && <Loading title={'каталог'} />}
       {status === 'error' && <Errors error={error} />}
 
 			{status === 'success' && (

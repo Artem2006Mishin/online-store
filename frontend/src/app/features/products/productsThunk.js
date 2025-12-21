@@ -5,7 +5,7 @@ export const getProductsThunk = createAsyncThunk(
 	'products/getProducts',
 	async (payload, thunkAPI) => {
 		try {
-			const response = await api.get(`products/getProducts/${payload}`);
+			const response = await api.get(`products/getProducts/${1}`);
 			return response.data;
 		} catch (error) {
 			if (error.isNetworkError) {

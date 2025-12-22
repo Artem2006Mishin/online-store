@@ -1,10 +1,15 @@
 package com.example.backend.repository;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.backend.model.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
+@Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-  List<Product> findByCategoryId(Long categoryId);
-};
+  Optional<Product> findByName(String name);
+
+  List<Product> findByCategory_Title(String title); // ← ФИЛЬТР ПО КАТЕГОРИИ
+}

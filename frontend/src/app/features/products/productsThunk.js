@@ -1,25 +1,25 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../api/axios';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../../api/axios";
 
 export const getProductsThunk = createAsyncThunk(
-	'products/getProducts',
-	async (payload, thunkAPI) => {
-		try {
-			const response = await api.get(`products/getProducts/${1}`);
-			return response.data;
-		} catch (error) {
-			if (error.isNetworkError) {
-				return thunkAPI.rejectWithValue({
-					status: 'NETWORK_ERROR',
-					message:
-						'Сервер не доступен. Проверьте соединение или запустите backend.',
-				});
-			}
+  "products/getProducts",
+  async (payload, thunkAPI) => {
+    try {
+      const response = await api.get(`/products/category/${payload}`);
+      return response.data;
+    } catch (error) {
+      if (error.isNetworkError) {
+        return thunkAPI.rejectWithValue({
+          status: "NETWORK_ERROR",
+          message:
+            "Сервер не доступен. Проверьте соединение или запустите backend.",
+        });
+      }
 
-			return thunkAPI.rejectWithValue({
-				status: 'UNKNOWN_ERROR',
-				message: error.message,
-			});
-		}
-	}
+      return thunkAPI.rejectWithValue({
+        status: "UNKNOWN_ERROR",
+        message: error.message,
+      });
+    }
+  }
 );

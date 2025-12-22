@@ -3,8 +3,8 @@ package com.example.backend.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,16 +36,15 @@ public class AuthService {
     }
 
     public UserResponseDto login(UserDto userDto) {
-        UsernamePasswordAuthenticationToken authenticationRequest = UsernamePasswordAuthenticationToken
-                .unauthenticated(userDto.getEmail(), userDto.getPassword());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
 
-        @SuppressWarnings("unused")
-        Authentication authenticationResponse = (Authentication) authenticationManager
-                .authenticate(authenticationRequest);
-
-        String token = jwtService.generateToken(userDto.getEmail());
-
-        return new UserResponseDto(userDto.getEmail(), token);
+            String token = jwtService.generateToken(userDto.getEmail());
+            return new UserResponseDto(userDto.getEmail(), token);
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("Invalid email or password");
+        }
     }
 
     @Transactional
@@ -61,6 +60,7 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
         user.setPassword(encodedPassword);
+        user.setRole("USER");
 
         user = userRepository.save(user);
 

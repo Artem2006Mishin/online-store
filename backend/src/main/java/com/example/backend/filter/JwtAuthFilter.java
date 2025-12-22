@@ -9,15 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.backend.service.JwtService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.example.backend.service.JwtService;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -28,32 +27,58 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @SuppressWarnings("null")
+    // Опционально: не трогаем публичные эндпоинты и preflight-запросы
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        final String authHeader = request.getHeader("Autorization");
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()))
+            return true;
 
-        String token = null;
-        String email = null;
+        return path.startsWith("/auth/")
+                || path.startsWith("/news/")
+                || path.startsWith("/categories/")
+                || path.startsWith("/products/")
+                || path.equals("/error")
+                || path.equals("/") ||
+                path.startsWith("/images/") || path.startsWith("/static/");
+    }
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            email = jwtService.extractEmail(token);
-        }
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        final String authHeader = request.getHeader("Authorization");
 
-            if (jwtService.validateToken(token)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-                        null, userDetails.getAuthorities());
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
 
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                // ВАЖНО: extractEmail может выбросить ExpiredJwtException -> ловим выше
+                String email = jwtService.extractEmail(token);
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    // validateToken у тебя возвращает false на просроченном/битом токене
+                    if (jwtService.validateToken(token)) {
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
+
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
             }
+        } catch (Exception ignored) {
+            // Любой JWT-косяк (expired/invalid/signature/etc) не должен превращаться в 500
+            SecurityContextHolder.clearContext();
         }
+
+        // Цепочку продолжаем ВСЕГДА
         filterChain.doFilter(request, response);
     }
 }

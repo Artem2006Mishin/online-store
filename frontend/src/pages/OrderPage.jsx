@@ -11,7 +11,7 @@ const OrderPage = () => {
   const handleClick = () => {
     if (total > 0) { // todo: я заебался
       const orderData = {
-        items: items.map((item) => item.productId), // todo: в дальшейм расширить до адреса и оплаты
+        items: items.map((item) => item.productName), // todo: в дальшейм расширить до адреса и оплаты
       }
       dispatch(placeOrderThunk(orderData));
 

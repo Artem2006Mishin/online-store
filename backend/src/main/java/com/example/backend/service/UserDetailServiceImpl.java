@@ -24,6 +24,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
         @SuppressWarnings("unused")
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().toUpperCase());
 
-        return (UserDetails) new User(user.getEmail(), user.getPassword());
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole())
+                .build();
     }
 }

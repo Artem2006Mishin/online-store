@@ -3,10 +3,23 @@ import api from '../../../api/axios';
 
 export const authUserThunk = createAsyncThunk(
   'user/authUser',
-  async ({url, userData}, thunkAPI) => {
+  async ({url, userData, isMultipart}, thunkAPI) => {
     try {
-      const response = await api.post(`auth/${url}`, userData, {skipAuth: true});
-      localStorage.setItem('token', response.data.token) // todo: когда будет настоящий JWT-токен, то нужно будет сериализовать его в json.
+      const config = {
+        skipAuth: true,
+        headers: {},
+      };
+
+      if (isMultipart) {
+        config.headers['Content-Type'] = 'multipart/form-data';
+      }
+
+      for (let [key, value] of userData.entries()) {
+        console.log(key, value);
+      }
+
+      const response = await api.post(`auth/${url}`, userData, config);
+      localStorage.setItem('token', response.data.token)
       return response.data;
     } catch (error) {
       if (error.response) {

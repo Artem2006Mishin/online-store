@@ -13,13 +13,31 @@ const RegistrationPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    avatar: null,
   };
 
   const dispatch = useDispatch();
-  const onSubmit = data => {
-    const {confirmPassword: _, ...dataToSend} = data;
-    dispatch(authUserThunk({url: 'register', userData: dataToSend}));
+  const onSubmit = (data) => {
+    const {confirmPassword: _, avatar, ...rest} = data;
+    const formData = new FormData();
+
+    Object.entries(rest).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    if (avatar && avatar.length > 0) {
+      formData.append('avatar', avatar[0]);
+    }
+
+    dispatch(
+      authUserThunk({
+        url: 'register',
+        userData: formData,
+        isMultipart: true,
+      })
+    );
   };
+
 
   const navigate = useNavigate();
   const status = useSelector(state => state.users.status);
@@ -37,6 +55,8 @@ const RegistrationPage = () => {
           schema={registerSchema}
         >
           <Input label='Электронная почта' name='email' type='email'/>
+          <Input label='Аватар' name='avatar' type='file' accept="image/*"/>
+
           <Input label='Пароль' name='password' type='password'/>
           <Input
             label='Подтверждение пароля'

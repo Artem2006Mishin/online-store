@@ -21,13 +21,18 @@ public class ProfileController {
     public ResponseEntity<UserResponse> getProfile() {
         try {
             User user = currentUserService.getCurrentUser();
-            return ResponseEntity.ok(new UserResponse(user.getEmail(), user.getRole()));
+            return ResponseEntity.ok(new UserResponse(
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getLoginCount() // ← новое поле
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }
     }
 
     // DTO для ответа
-    public record UserResponse(String email, String role) {
+    public record UserResponse(String email, String role, int loginCount) {
     }
+
 }

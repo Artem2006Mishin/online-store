@@ -20,8 +20,8 @@ public class Order {
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items = new ArrayList<>();
+    @Column(nullable = false)
+    private double totalPrice = 0.0;
 
     public Long getId() {
         return id;
@@ -39,7 +39,16 @@ public class Order {
         return createdAt;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
 }

@@ -1,49 +1,56 @@
 package com.example.backend.service;
 
-import com.example.backend.model.*;
-import com.example.backend.repository.CartRepository;
+import com.example.backend.dto.CreateOrderDto;
+import com.example.backend.model.Order;
+import com.example.backend.model.Product;
+import com.example.backend.model.User;
 import com.example.backend.repository.OrderRepository;
+import com.example.backend.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.List;
 
 @Service
 public class OrderService {
 
-    private final CartService cartService;
     private final OrderRepository orderRepository;
-    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
+    private final CurrentUserService currentUserService;
 
-    public OrderService(CartService cartService, OrderRepository orderRepository, CartRepository cartRepository) {
-        this.cartService = cartService;
+    public OrderService(OrderRepository orderRepository,
+            ProductRepository productRepository,
+            CurrentUserService currentUserService) {
         this.orderRepository = orderRepository;
-        this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
+        this.currentUserService = currentUserService;
     }
 
     @Transactional
-    public Order checkout() {
-        Cart cart = cartService.getOrCreateActiveCart();
+    public Order createOrder(CreateOrderDto dto) {
+        User user = currentUserService.getCurrentUser();
 
-        if (cart.getItems().isEmpty()) {
-            throw new RuntimeException("Cart is empty");
+        List<Long> ids = dto.getProductIds();
+        if (ids == null || ids.isEmpty()) {
+            throw new RuntimeException("Product list is empty");
         }
+
+        List<Product> products = productRepository.findAllById(ids);
+
+        if (products.size() != ids.size()) {
+            throw new RuntimeException("Some products not found");
+        }
+
+        double total = products.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
 
         Order order = new Order();
-        order.setUser(cart.getUser());
+        order.setUser(user);
+        order.setCreatedAt(Instant.now());
+        order.setTotalPrice(total);
 
-        for (CartItem ci : cart.getItems()) {
-            order.getItems().add(new OrderItem(
-                    order,
-                    ci.getProduct(),
-                    ci.getQuantity(),
-                    ci.getProduct().getPrice()));
-        }
-
-        Order saved = orderRepository.save(order);
-
-        // закрываем корзину и создаём новую при следующем обращении
-        cart.setStatus(CartStatus.ORDERED);
-        cartRepository.save(cart);
-
-        return saved;
+        return orderRepository.save(order);
     }
 }

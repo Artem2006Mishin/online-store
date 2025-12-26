@@ -35,10 +35,20 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public UserResponseDto login(UserDto userDto) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
+                    new UsernamePasswordAuthenticationToken(
+                            userDto.getEmail(),
+                            userDto.getPassword()));
+
+            // загрузить пользователя и увеличить счётчик
+            User user = userRepository.findByEmail(userDto.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found: " + userDto.getEmail()));
+
+            user.setLoginCount(user.getLoginCount() + 1);
+            userRepository.save(user);
 
             String token = jwtService.generateToken(userDto.getEmail());
             return new UserResponseDto(userDto.getEmail(), token);
@@ -50,22 +60,23 @@ public class AuthService {
     @Transactional
     public UserResponseDto register(RegisterDto registerDto) {
         Optional<User> existingUser = userRepository.findByEmail(registerDto.getEmail());
-
         if (existingUser.isPresent()) {
             throw new RuntimeException("User with email " + registerDto.getEmail() + " already exists");
         }
 
         User user = new User();
         user.setEmail(registerDto.getEmail());
-
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
         user.setPassword(encodedPassword);
         user.setRole("USER");
 
+        // первая регистрация тоже считается входом
+        user.setLoginCount(user.getLoginCount() + 1); // с 0 до 1
+
         user = userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
-
         return new UserResponseDto(user.getEmail(), token);
     }
+
 }

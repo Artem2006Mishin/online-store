@@ -1,12 +1,17 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {authUserThunk, getUserThunk} from "./usersThunk.js";
 
+const initialState = {
+  userData: {},
+  status: 'inactive',
+  error: null,
+}
+
 const userSlice = createSlice({
   name: 'users',
-  initialState: {
-    userData: {},
-    status: 'inactive',
-    error: null,
+  initialState,
+  reducers: {
+    resetCart: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -39,3 +44,4 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+export const {resetCart} = userSlice.actions;

@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ProfilePage from './pages/ProfilePage';
 import OrderPage from "./pages/OrderPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,9 @@ export const router = createBrowserRouter([
       }
     ],
   },
+  {
+    path: '*',
+    element: <NotFoundPage/>,
+  }
 ]);
 
-// todo: добавить 404

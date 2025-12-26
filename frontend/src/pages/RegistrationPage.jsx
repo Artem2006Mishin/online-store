@@ -1,10 +1,8 @@
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {useEffect} from 'react';
-
 import {registerSchema} from '../components/schema';
 import {authUserThunk} from '../app/features/users/usersThunk';
-
 import Input from '../components/Input/Input';
 import Form from '../components/Form/Form';
 import Button from '../components/Button/Button';

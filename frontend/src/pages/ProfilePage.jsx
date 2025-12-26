@@ -1,22 +1,24 @@
 import Header from '../components/Header/Header';
 import Section from '../components/Section/Section';
 import Detail from '../components/Detail/Detail';
-import { useEffect } from 'react';
-import { getUserThunk } from '../app/features/users/usersThunk';
+import {useEffect} from 'react';
+import {getUserThunk} from '../app/features/users/usersThunk';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import {useDispatch, useSelector} from "react-redux";
 import {getTimeThunk} from "../app/features/time/timeThunk.js";
 import {tick} from "../app/features/time/timeSlice.js";
+import {resetCart} from "../app/features/users/usersSlice.js";
+import {useNavigate} from "react-router-dom";
 
 const ProfilePage = () => {
-	const { userData, status, error } = useSelector(state => state.users);
+  const {userData, status, error} = useSelector(state => state.users);
   const {serverTime} = useSelector(state => state.time);
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	useEffect(() => {
-		if (status === 'inactive') dispatch(getUserThunk());
-	}, [status, dispatch]);
+  useEffect(() => {
+    if (status === 'inactive') dispatch(getUserThunk());
+  }, [status, dispatch]);
 
   useEffect(() => {
     if (status === 'inactive') {
@@ -34,20 +36,30 @@ const ProfilePage = () => {
     return () => clearInterval(interval);
   }, [serverTime, dispatch]);
 
-	return (
-		<Section>
-			<Header title='Профиль' />
+  const navigate = useNavigate();
+  const handleClick = () => {
+    localStorage.removeItem('token');
+    dispatch(resetCart());
+    navigate('/auth');
+  }
 
-			{status === 'loading' && <Loading title='профиль' />}
-			{status === 'success' &&
-        <div>
-          <Detail title='email' value={userData.email} />
-          <Detail title='время' value={new Date(serverTime).toLocaleTimeString()} />
+  return (
+    <Section>
+      <Header title='Профиль'/>
+
+      {status === 'loading' && <Loading title='профиль'/>}
+      {status === 'success' &&
+        <div
+          style={{display: 'flex', flexDirection: 'column', alignItems: 'start', maxWidth: '800px', margin: '0 auto'}}>
+          <Detail title='email' value={userData.email}/>
+          <Detail title='время' value={new Date(serverTime).toLocaleTimeString()}/>
+
+          <button style={{padding: '10px', fontSize: '20px'}} onClick={handleClick}>выйти из аккаунта</button>
         </div>
-        }
-			{status === 'error' && <Errors error={error} />}
-		</Section>
-	);
+      }
+      {status === 'error' && <Errors error={error}/>}
+    </Section>
+  );
 };
 
 export default ProfilePage;

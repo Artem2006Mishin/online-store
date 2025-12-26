@@ -39,7 +39,7 @@ const Form = ({ children, onSubmit, defaultValues, schema }) => {
 					message: error.message,
 				});
 				break;
-			default: // todo: сделтаь обработку других ошибок: NETWORK_ERROR и UNKNOWN_ERROR
+			default:
 				methods.setError('root', {
 					type: 'server',
 					message: 'Произошла неизвестная ошибка',

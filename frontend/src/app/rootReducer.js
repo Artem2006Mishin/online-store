@@ -4,11 +4,13 @@ import categoriesReducer from './features/categories/categoriesSlice';
 import productsReducer from './features/products/productSlice';
 import usersReducer from './features/users/usersSlice';
 import cartReducer from './features/cart/cartSlice';
+import timeReducer from './features/time/timeSlice';
 
 export const rootReducer = combineReducers({
 	news: newsReducer,
 	categories: categoriesReducer,
 	products: productsReducer,
 	users: usersReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  time: timeReducer,
 });

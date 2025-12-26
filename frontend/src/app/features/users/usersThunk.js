@@ -7,9 +7,6 @@ export const authUserThunk = createAsyncThunk(
     try {
       const response = await api.post(`auth/${url}`, userData, {skipAuth: true});
       localStorage.setItem('token', response.data.token) // todo: когда будет настоящий JWT-токен, то нужно будет сериализовать его в json.
-
-      console.log(response.data);
-
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -52,10 +49,10 @@ export const authUserThunk = createAsyncThunk(
 );
 
 export const getUserThunk = createAsyncThunk(
-  'user/authUser',
+  'user/getUser',
   async (payload, thunkAPI) => {
   try {
-    const response = await api.get(`auth/getData`);
+    const response = await api.get(`/profile`);
     return response.data;
   } catch (error) {
     if (error.isNetworkError) {
@@ -63,6 +60,14 @@ export const getUserThunk = createAsyncThunk(
         status: 'NETWORK_ERROR',
         message:
           'Сервер не доступен. Проверьте соединение или запустите backend.',
+      });
+    }
+
+    if (error.response?.status === 401) {
+      return thunkAPI.rejectWithValue({
+        status: 'UNAUTHORIZED',
+        message:
+          'Вы не зарегистрированы.',
       });
     }
 

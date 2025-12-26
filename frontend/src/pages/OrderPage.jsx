@@ -9,12 +9,11 @@ const OrderPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = () => {
-    if (total > 0) { // todo: я заебался
-      const orderData = {
-        items: items.map((item) => item.productName), // todo: в дальшейм расширить до адреса и оплаты
-      }
-      dispatch(placeOrderThunk(orderData));
+    if (total > 0) {
+      const orderData = [items.map((item) => item.productId)];
+      console.log(orderData);
 
+      dispatch(placeOrderThunk(orderData));
       dispatch(clearCart());
       navigate('/');
     }

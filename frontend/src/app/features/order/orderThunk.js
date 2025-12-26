@@ -5,9 +5,8 @@ export const placeOrderThunk = createAsyncThunk(
   'orders/placeOrder',
   async (orderData, thunkAPI) => {
     try {
-      console.log(orderData);
-
-      const response = await api.post('orders/placeOrder', orderData);
+      const response = await api.post('/cart/add', orderData);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       if (error.isNetworkError) {
@@ -30,7 +29,7 @@ export const getOrdersThunk = createAsyncThunk(
   'orders/getOrders',
   async (orderData, thunkAPI) => {
     try {
-      const response = await api.get('orders/getOrders');
+      const response = await api.get('/cart');
       return response.data;
     } catch (error) {
       if (error.isNetworkError) {

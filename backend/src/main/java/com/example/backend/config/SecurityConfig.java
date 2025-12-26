@@ -44,6 +44,7 @@ public class SecurityConfig {
 
             // публичные маршруты
             .requestMatchers("/auth/**", "/news/**", "/", "/error", "/images/**", "/static/**").permitAll()
+            .requestMatchers("/api/time").permitAll()
 
             // каталог и всё остальное — только авторизованным
             .anyRequest().authenticated())

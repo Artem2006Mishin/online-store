@@ -15,7 +15,8 @@ public class CurrentUserService {
     }
 
     public User getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = SecurityContextHolder.getContext().getAuthentication()
+                .getName(); // email из JWT
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found: " + email));
     }

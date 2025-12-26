@@ -51,24 +51,24 @@ export const authUserThunk = createAsyncThunk(
   }
 );
 
-// export const getUserThunk = createAsyncThunk(
-//   'user/authUser',
-//   async (payload, thunkAPI) => {
-//   try {
-//     const response = await api.get(`products/getProducts/${payload}`);
-//     return response.data;
-//   } catch (error) {
-//     if (error.isNetworkError) {
-//       return thunkAPI.rejectWithValue({
-//         status: 'NETWORK_ERROR',
-//         message:
-//           'Сервер не доступен. Проверьте соединение или запустите backend.',
-//       });
-//     }
-//
-//     return thunkAPI.rejectWithValue({
-//       status: 'UNKNOWN_ERROR',
-//       message: error.message,
-//     });
-//   }
-// });
+export const getUserThunk = createAsyncThunk(
+  'user/authUser',
+  async (payload, thunkAPI) => {
+  try {
+    const response = await api.get(`auth/getData`);
+    return response.data;
+  } catch (error) {
+    if (error.isNetworkError) {
+      return thunkAPI.rejectWithValue({
+        status: 'NETWORK_ERROR',
+        message:
+          'Сервер не доступен. Проверьте соединение или запустите backend.',
+      });
+    }
+
+    return thunkAPI.rejectWithValue({
+      status: 'UNKNOWN_ERROR',
+      message: error.message,
+    });
+  }
+});

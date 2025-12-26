@@ -5,20 +5,23 @@ export const authUserThunk = createAsyncThunk(
   'user/authUser',
   async ({url, userData, isMultipart}, thunkAPI) => {
     try {
-      const config = {
-        skipAuth: true,
-        headers: {},
-      };
+      let response;
 
       if (isMultipart) {
-        config.headers['Content-Type'] = 'multipart/form-data';
+        const config = {
+          skipAuth: true,
+          headers: {},
+        };
+
+        if (isMultipart) {
+          config.headers['Content-Type'] = 'multipart/form-data';
+        }
+
+        response = await api.post(`auth/${url}`, userData, config);
+      } else {
+        response = await api.post(`auth/${url}`, userData, {skipAuth: true});
       }
 
-      for (let [key, value] of userData.entries()) {
-        console.log(key, value);
-      }
-
-      const response = await api.post(`auth/${url}`, userData, config);
       localStorage.setItem('token', response.data.token)
       return response.data;
     } catch (error) {

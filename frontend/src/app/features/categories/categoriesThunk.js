@@ -16,6 +16,14 @@ export const getCategoriesThunk = createAsyncThunk(
         });
       }
 
+      if (error.response?.status === 401) {
+        return thunkAPI.rejectWithValue({
+          status: 'UNAUTHORIZED',
+          message:
+            'Вы не зарегистрированы.',
+        });
+      }
+
       return thunkAPI.rejectWithValue({
         status: 'UNKNOWN_ERROR',
         message: error.message,

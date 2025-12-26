@@ -1,5 +1,4 @@
 // import { useDispatch, useSelector } from 'react-redux';
-
 import Header from '../components/Header/Header';
 import Section from '../components/Section/Section';
 // import Detail from '../components/Detail/Detail';
@@ -9,7 +8,7 @@ import Section from '../components/Section/Section';
 // import Errors from '../components/Errors/Error';
 
 const ProfilePage = () => {
-	// const { items, status, error } = useSelector(state => state.users);
+	// const { userData, status, error } = useSelector(state => state.users);
 	// const dispatch = useDispatch();
 	// useEffect(() => {
 	// 	if (status === 'inactive') dispatch(getUser('/auth/getInfo'));
@@ -20,7 +19,7 @@ const ProfilePage = () => {
 			<Header title='Профиль' />
 
 			{/*{status === 'loading' && <Loading title='профиль' />}*/}
-			{/*{status === 'success' && <Detail title='email' value={items.email} />}*/}
+			{/*{status === 'success' && <Detail title='email' value={userData.email} />}*/}
 			{/*{status === 'error' && <Errors error={error} />}*/}
 		</Section>
 	);

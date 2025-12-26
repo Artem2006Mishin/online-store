@@ -1,21 +1,26 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
-// import { useSelector } from 'react-redux';
+import {useState} from "react";
 
 const Layout = () => {
-	// const { token } = useSelector((state) => state.userData.userData);
+	const token = localStorage.getItem('token');
 
+  const [navData, setNavData] = useState([
+    { to: '/', text: 'НОВОСТИ' },
+    { to: '/auth', text: 'ВОЙТИ В АККАУНТ' },
+  ]);
 
-	const unregisteredUserData = [
-		{ to: '/', text: 'НОВОСТИ' },
-		{ to: '/categories', text: 'КАТАЛОГ' },
-		{ to: '/auth', text: 'ВОЙТИ В АККАУНТ' },
-	];
+  // if (token) {
+  //   setNavData([
+  //     ...navData,
+  //     { to: '/categories', text: 'КАТАЛОГ' },
+  //   ]);
+  // }
 
 	return (
 		<>
 			<header>
-        <Navbar data={unregisteredUserData} />
+        <Navbar data={navData} />
 			</header>
 
 			<main>

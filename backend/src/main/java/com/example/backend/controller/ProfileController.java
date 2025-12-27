@@ -24,15 +24,17 @@ public class ProfileController {
             return ResponseEntity.ok(new UserResponse(
                     user.getEmail(),
                     user.getRole(),
-                    user.getLoginCount() // ← новое поле
-            ));
+                    user.getLoginCount(),
+                    user.getAvatarUrl()));
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }
     }
 
-    // DTO для ответа
-    public record UserResponse(String email, String role, int loginCount) {
+    public record UserResponse(String email,
+            String role,
+            int loginCount,
+            String avatarUrl) {
     }
 
 }

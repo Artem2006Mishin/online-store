@@ -21,6 +21,9 @@ public class User {
   @Column(nullable = false)
   private int loginCount = 0;
 
+  @Column
+  private String avatarUrl; // может быть null
+
   public User() {
   }
 
@@ -68,5 +71,13 @@ public class User {
 
   public void setLoginCount(int loginCount) {
     this.loginCount = loginCount;
+  }
+
+  public String getAvatarUrl() {
+    return avatarUrl;
+  }
+
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
   }
 }

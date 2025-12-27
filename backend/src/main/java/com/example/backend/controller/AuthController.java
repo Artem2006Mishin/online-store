@@ -43,30 +43,29 @@ public class AuthController {
             UserResponseDto response = authService.login(userDto);
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
+            // Неверный логин/пароль → 401
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid email or password");
         } catch (Exception e) {
+            // Любая другая ошибка → 500
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Login failed: " + e.getMessage());
         }
     }
 
-    // ---------- РЕГИСТРАЦИЯ: multipart/form-data с email, password, avatar
-    // ----------
+    // ---------- РЕГИСТРАЦИЯ: multipart (email, password, avatar) ----------
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> register(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
         try {
-            // 1. Собираем DTO и регистрируем пользователя (логика та же, что и раньше)
-            var registerDto = new RegisterDto();
+            RegisterDto registerDto = new RegisterDto();
             registerDto.setEmail(email);
             registerDto.setPassword(password);
 
             UserResponseDto response = authService.register(registerDto);
 
-            // 2. Если пришёл файл аватара — сохраняем его и прописываем avatarUrl
             if (avatar != null && !avatar.isEmpty()) {
                 User user = userRepository.findByEmail(email)
                         .orElseThrow(() -> new RuntimeException("User not found after register"));
@@ -100,7 +99,7 @@ public class AuthController {
         }
     }
 
-    // ---------- (по желанию) отдельный endpoint для аватарки ----------
+    // ---------- (опционально) смена аватарки после регистрации ----------
     @PostMapping("/avatar")
     public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {

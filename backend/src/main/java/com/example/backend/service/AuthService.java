@@ -14,6 +14,7 @@ import com.example.backend.dto.RegisterDto;
 import com.example.backend.dto.UserDto;
 import com.example.backend.dto.UserResponseDto;
 import com.example.backend.repository.UserRepository;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -31,29 +32,34 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
-    AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Transactional
     public UserResponseDto login(UserDto userDto) {
         try {
+            // проверка логина/пароля Spring Security
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             userDto.getEmail(),
                             userDto.getPassword()));
 
-            // загрузить пользователя и увеличить счётчик
+            // если сюда дошли — креды верные
             User user = userRepository.findByEmail(userDto.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found: " + userDto.getEmail()));
 
+            // увеличиваем счётчик входов
             user.setLoginCount(user.getLoginCount() + 1);
             userRepository.save(user);
 
             String token = jwtService.generateToken(userDto.getEmail());
             return new UserResponseDto(userDto.getEmail(), token);
+
         } catch (BadCredentialsException e) {
-            throw new RuntimeException("Invalid email or password");
+            // важно пробросить именно BadCredentialsException,
+            // контроллер превратит его в 401
+            throw e;
         }
     }
 
@@ -61,7 +67,8 @@ public class AuthService {
     public UserResponseDto register(RegisterDto registerDto) {
         Optional<User> existingUser = userRepository.findByEmail(registerDto.getEmail());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("User with email " + registerDto.getEmail() + " already exists");
+            throw new RuntimeException(
+                    "User with email " + registerDto.getEmail() + " already exists");
         }
 
         User user = new User();
@@ -69,14 +76,11 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
         user.setPassword(encodedPassword);
         user.setRole("USER");
-
-        // первая регистрация тоже считается входом
-        user.setLoginCount(user.getLoginCount() + 1); // с 0 до 1
+        user.setLoginCount(user.getLoginCount() + 1); // первая авторизация
 
         user = userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
         return new UserResponseDto(user.getEmail(), token);
     }
-
 }

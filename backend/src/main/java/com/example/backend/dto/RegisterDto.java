@@ -6,7 +6,7 @@ public class RegisterDto {
 
     private String password;
 
-    RegisterDto() {
+    public RegisterDto() {
     }
 
     public String getEmail() {

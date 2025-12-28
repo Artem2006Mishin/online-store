@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend.model.User;
 import com.example.backend.dto.RegisterDto;
+import com.example.backend.dto.UpdateProfileDto;
 import com.example.backend.dto.UserDto;
 import com.example.backend.dto.UserResponseDto;
 import com.example.backend.repository.UserRepository;
@@ -102,6 +103,39 @@ public class AuthService {
             token, 
             user.getRole(), 
             user.getLoginCount(), 
+            avatarUrl
+        );
+    }
+
+    @Transactional
+    public UserResponseDto updateProfile(UpdateProfileDto updateDto, User currentUser) {
+        // Проверяем email, если он изменен
+        if (updateDto.getEmail() != null && !updateDto.getEmail().equals(currentUser.getEmail())) {
+            Optional<User> existingUser = userRepository.findByEmail(updateDto.getEmail());
+            if (existingUser.isPresent()) {
+                throw new RuntimeException("Пользователь с таким email уже существует");
+            }
+            currentUser.setEmail(updateDto.getEmail());
+        }
+
+        // Обновляем пароль, если он предоставлен
+        if (updateDto.getPassword() != null && !updateDto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(updateDto.getPassword());
+            currentUser.setPassword(encodedPassword);
+        }
+
+        userRepository.save(currentUser);
+
+        String avatarUrl = currentUser.getAvatarUrl();
+        // Если avatarUrl не null и не начинается с /images, добавляем префикс
+        if (avatarUrl != null && !avatarUrl.startsWith("/images")) {
+            avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
+        }
+        return new UserResponseDto(
+            currentUser.getEmail(), 
+            null, // token не нужен при обновлении
+            currentUser.getRole(), 
+            currentUser.getLoginCount(), 
             avatarUrl
         );
     }

@@ -1,8 +1,11 @@
 import Header from '../components/Header/Header';
 import Section from '../components/Section/Section';
 import Detail from '../components/Detail/Detail';
-import { useEffect } from 'react';
-import { getUserThunk } from '../app/features/users/usersThunk';
+import { useEffect, useState } from 'react';
+import {
+	getUserThunk,
+	updateProfileThunk,
+} from '../app/features/users/usersThunk';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,11 +14,16 @@ import { tick } from '../app/features/time/timeSlice.js';
 import { resetCart } from '../app/features/users/usersSlice.js';
 import { useNavigate } from 'react-router-dom';
 import { getOrdersThunk } from '../app/features/order/orderThunk.js';
+import { updateProfileSchema } from '../components/schema';
+import Input from '../components/Input/Input';
+import Form from '../components/Form/Form';
+import Button from '../components/Button/Button';
 
 const ProfilePage = () => {
 	const { userData, status, error } = useSelector((state) => state.users);
 	const { serverTime } = useSelector((state) => state.time);
 	const dispatch = useDispatch();
+	const [isEditing, setIsEditing] = useState(false);
 
 	const { getOrdersStatus, ordersList, getOrdersError } = useSelector(
 		(state) => state.orders
@@ -50,6 +58,38 @@ const ProfilePage = () => {
 		localStorage.removeItem('token');
 		dispatch(resetCart());
 		navigate('/auth');
+	};
+
+	const defaultValues = {
+		email: userData?.email || '',
+		password: '',
+		confirmPassword: '',
+		avatar: null,
+	};
+
+	const onSubmit = (data) => {
+		const { confirmPassword: _, avatar, ...rest } = data;
+		const formData = new FormData();
+
+		Object.entries(rest).forEach(([key, value]) => {
+			if (value) formData.append(key, value);
+		});
+
+		if (avatar && avatar.length > 0) {
+			formData.append('avatar', avatar[0]);
+		}
+
+		dispatch(
+			updateProfileThunk({
+				userData: formData,
+				isMultipart: true,
+			})
+		).then((result) => {
+			if (result.meta.requestStatus === 'fulfilled') {
+				setIsEditing(false);
+				dispatch(getUserThunk()); // Перезагрузить данные пользователя
+			}
+		});
 	};
 
 	return (
@@ -210,6 +250,101 @@ const ProfilePage = () => {
 							</div>
 						</div>
 					</div>
+
+					{/* Кнопка редактирования профиля */}
+					<div style={{ marginBottom: '30px', textAlign: 'center' }}>
+						<button
+							onClick={() => setIsEditing(!isEditing)}
+							style={{
+								padding: '12px 30px',
+								fontSize: '16px',
+								fontWeight: '600',
+								color: '#fff',
+								backgroundColor: '#3b82f6',
+								border: 'none',
+								borderRadius: '10px',
+								cursor: 'pointer',
+								transition: 'all 0.3s ease',
+								boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
+							}}
+							onMouseEnter={(e) => {
+								e.target.style.backgroundColor = '#2563eb';
+								e.target.style.transform = 'translateY(-2px)';
+								e.target.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.4)';
+							}}
+							onMouseLeave={(e) => {
+								e.target.style.backgroundColor = '#3b82f6';
+								e.target.style.transform = 'translateY(0)';
+								e.target.style.boxShadow = '0 4px 15px rgba(59, 130, 246, 0.3)';
+							}}
+						>
+							{isEditing ? 'Отменить редактирование' : 'Редактировать профиль'}
+						</button>
+					</div>
+
+					{/* Форма редактирования профиля */}
+					{isEditing && (
+						<div
+							style={{
+								backgroundColor: '#ffffff',
+								borderRadius: '20px',
+								padding: '30px',
+								marginBottom: '30px',
+								boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+							}}
+						>
+							<h2
+								style={{
+									fontSize: '28px',
+									fontWeight: '700',
+									marginBottom: '25px',
+									color: '#1f2937',
+									display: 'flex',
+									alignItems: 'center',
+									gap: '10px',
+								}}
+							>
+								<span
+									style={{
+										width: '4px',
+										height: '28px',
+										backgroundColor: '#667eea',
+										borderRadius: '2px',
+									}}
+								/>
+								Редактировать профиль
+							</h2>
+
+							<Form
+								onSubmit={onSubmit}
+								defaultValues={defaultValues}
+								schema={updateProfileSchema}
+							>
+								<Input label='Электронная почта' name='email' type='email' />
+								<Input
+									label='Новый пароль'
+									name='password'
+									type='password'
+									placeholder='Оставьте пустым, если не хотите менять'
+								/>
+								<Input
+									label='Подтверждение нового пароля'
+									name='confirmPassword'
+									type='password'
+									placeholder='Оставьте пустым, если не хотите менять'
+								/>
+								<Input
+									label='Новый аватар'
+									name='avatar'
+									type='file'
+									accept='image/*'
+								/>
+
+								<Button type='submit' label='Сохранить изменения' />
+							</Form>
+							{status === 'error' && error && <Errors error={error} />}
+						</div>
+					)}
 
 					{/* Кнопка выхода */}
 					<div style={{ marginBottom: '30px', textAlign: 'center' }}>

@@ -96,3 +96,56 @@ export const getUserThunk = createAsyncThunk(
 		}
 	}
 );
+
+export const updateProfileThunk = createAsyncThunk(
+	'user/updateProfile',
+	async ({ userData, isMultipart }, thunkAPI) => {
+		try {
+			let response;
+
+			if (isMultipart) {
+				const config = {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+					},
+				};
+
+				response = await api.put(`profile`, userData, config);
+			} else {
+				response = await api.put(`profile`, userData);
+			}
+
+			console.log(response.data);
+			return response.data;
+		} catch (error) {
+			if (error.response) {
+				if (error.response.status === 409) {
+					return thunkAPI.rejectWithValue({
+						status: 'EMAIL_BUSY',
+						message: 'Пользователь с таким email уже существует',
+					});
+				}
+
+				if (error.response.status === 400) {
+					return thunkAPI.rejectWithValue({
+						status: 'BAD_REQUEST',
+						message: error.response.data || 'Ошибка обновления профиля',
+					});
+				}
+			}
+
+			if (error.request) {
+				return thunkAPI.rejectWithValue({
+					status: 'NETWORK_ERROR',
+					message:
+						'Сервер не доступен. Проверьте соединение или запустите backend.',
+				});
+			}
+
+			return thunkAPI.rejectWithValue({
+				status: 'UNKNOWN_ERROR',
+				message: error.message,
+			});
+		}
+	}
+);

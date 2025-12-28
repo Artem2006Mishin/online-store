@@ -28,6 +28,41 @@
 	font-weight: 600;
 }
 
+.deleteButton {
+	margin-top: 10px;
+	padding: 5px 10px;
+	background-color: #f44336;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.deleteButton:hover {
+	background-color: #d32f2f;
+}
+
+.buttons {
+	display: flex;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.editButton {
+	padding: 5px 10px;
+	background-color: #2196f3;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.editButton:hover {
+	background-color: #1976d2;
+}
+
 .description__text {
 	font-size: 20px;
 }

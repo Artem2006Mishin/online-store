@@ -1,6 +1,20 @@
+import { useDispatch } from 'react-redux';
+import { deleteNewsThunk } from '../../app/features/news/newsThunk';
 import styles from './Card.module.css';
 
-const Card = ({ data, type, onClick }) => {
+const Card = ({ data, type, onClick, onEdit }) => {
+	const dispatch = useDispatch();
+
+	const handleDelete = (e) => {
+		e.stopPropagation(); // Предотвращаем клик на карточке
+		dispatch(deleteNewsThunk(data.id));
+	};
+
+	const handleEdit = (e) => {
+		e.stopPropagation();
+		if (onEdit) onEdit(data);
+	};
+
 	return (
 		<div className={styles.card}>
 			<img
@@ -12,6 +26,16 @@ const Card = ({ data, type, onClick }) => {
 			<div className={styles.description}>
 				<h3 className={styles.description__title}>{data.title}</h3>
 				{data.text && <p className={styles.description__text}>{data.text}</p>}
+				{type === 'news' && (
+					<div className={styles.buttons}>
+						<button className={styles.editButton} onClick={handleEdit}>
+							Редактировать
+						</button>
+						<button className={styles.deleteButton} onClick={handleDelete}>
+							Удалить
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -3,10 +3,10 @@ import Form from '../Form/Form';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { newsSchema } from '../schema';
-import { createNewsThunk } from '../../app/features/news/newsThunk';
+import { createNewsThunk, updateNewsThunk } from '../../app/features/news/newsThunk';
 
-const NewsForm = ({ onCancel }) => {
-	const defaultValues = {
+const NewsForm = ({ onCancel, initialValues, isEditing, newsId }) => {
+	const defaultValues = initialValues || {
 		title: '',
 		text: '',
 		image: null,
@@ -14,7 +14,11 @@ const NewsForm = ({ onCancel }) => {
 
 	const dispatch = useDispatch();
 	const onSubmit = (data) => {
-		dispatch(createNewsThunk(data));
+		if (isEditing) {
+			dispatch(updateNewsThunk({ id: newsId, data }));
+		} else {
+			dispatch(createNewsThunk(data));
+		}
 		// После отправки можно закрыть форму
 		onCancel();
 	};
@@ -25,7 +29,7 @@ const NewsForm = ({ onCancel }) => {
 			<Input label='Текст' name='text' type='textarea' />
 			<Input label='Изображение' name='image' type='file' accept='image/*' />
 
-			<Button type='submit' label='Создать новость' />
+			<Button type='submit' label={isEditing ? 'Обновить новость' : 'Создать новость'} />
 			<Button type='button' label='Отмена' onClick={onCancel} />
 		</Form>
 	);

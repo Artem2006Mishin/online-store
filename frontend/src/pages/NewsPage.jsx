@@ -16,10 +16,21 @@ const NewsPage = () => {
 	const { status, newsList, error } = useSelector((state) => state.news);
 	const dispatch = useDispatch();
 	const [showForm, setShowForm] = useState(false);
+	const [editingNews, setEditingNews] = useState(null);
 
 	useEffect(() => {
 		if (status === 'inactive') dispatch(getNewsThunk());
 	}, [status, dispatch]);
+
+	const handleEdit = (news) => {
+		setEditingNews(news);
+		setShowForm(true);
+	};
+
+	const handleCancel = () => {
+		setShowForm(false);
+		setEditingNews(null);
+	};
 
 	return (
 		<Section>
@@ -31,7 +42,7 @@ const NewsPage = () => {
 			{status === 'success' && (
 				<List
 					dataList={newsList}
-					renderItem={(data) => <Card key={data.id} data={data} type='news' />}
+					renderItem={(data) => <Card key={data.id} data={data} type='news' onEdit={handleEdit} />}
 				/>
 			)}
 
@@ -43,7 +54,18 @@ const NewsPage = () => {
 				/>
 			)}
 
-			{showForm && <NewsForm onCancel={() => setShowForm(false)} />}
+			{showForm && (
+				<NewsForm
+					onCancel={handleCancel}
+					initialValues={editingNews ? {
+						title: editingNews.title,
+						text: editingNews.text,
+						image: null,
+					} : null}
+					isEditing={!!editingNews}
+					newsId={editingNews?.id}
+				/>
+			)}
 		</Section>
 	);
 };

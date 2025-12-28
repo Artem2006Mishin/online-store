@@ -69,7 +69,7 @@ public class NewsController {
     this.newsRepository.deleteById(id);
   }
 
-  @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public News updateNews(
       @PathVariable Long id,
       @RequestParam("title") String title,

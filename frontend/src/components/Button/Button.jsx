@@ -9,7 +9,11 @@ const Button = ({ type, label, to, onClick }) => {
 	};
 
 	return (
-		<button className={styles.btn} type={type} onClick={handleClick}>
+		<button
+			className={styles.btn}
+			type={type}
+			onClick={type === 'submit' ? undefined : handleClick}
+		>
 			{label}
 		</button>
 	);

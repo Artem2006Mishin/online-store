@@ -66,3 +66,12 @@
 .description__text {
 	font-size: 20px;
 }
+
+.placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #f0f0f0;
+	color: #666;
+	font-size: 14px;
+}

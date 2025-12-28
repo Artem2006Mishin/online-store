@@ -28,6 +28,8 @@ export const createNewsThunk = createAsyncThunk(
 	'news/createNews',
 	async (newsData, thunkAPI) => {
 		try {
+			console.log(newsData);
+
 			const formData = new FormData();
 
 			Object.entries(newsData).forEach(([key, value]) => {
@@ -106,7 +108,7 @@ export const updateNewsThunk = createAsyncThunk(
 				},
 			};
 
-			const response = await api.put(`news/update/${id}`, formData, config);
+			const response = await api.post(`news/update/${id}`, formData, config);
 			return response.data;
 		} catch (error) {
 			if (error.isNetworkError) {

@@ -52,6 +52,9 @@ const userSlice = createSlice({
 			.addCase(updateProfileThunk.fulfilled, (state, action) => {
 				state.status = 'success';
 				state.userData = action.payload;
+				if (action.payload.token) {
+					localStorage.setItem('token', action.payload.token);
+				}
 			})
 			.addCase(updateProfileThunk.rejected, (state, action) => {
 				state.status = 'error';

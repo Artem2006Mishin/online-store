@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +46,7 @@ public class ProfileController {
             }
             return ResponseEntity.ok(new UserResponse(
                     user.getEmail(),
+                    null,
                     user.getRole(),
                     user.getLoginCount(),
                     avatarUrl));
@@ -87,7 +87,7 @@ public class ProfileController {
                 // Обновляем response с новым avatarUrl
                 response = new UserResponseDto(
                     currentUser.getEmail(),
-                    null,
+                    response.getToken(),
                     currentUser.getRole(),
                     currentUser.getLoginCount(),
                     currentUser.getAvatarUrl()
@@ -108,6 +108,7 @@ public class ProfileController {
     }
 
     public record UserResponse(String email,
+            String token,
             String role,
             int loginCount,
             String avatarUrl) {

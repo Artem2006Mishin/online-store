@@ -126,6 +126,8 @@ public class AuthService {
 
         userRepository.save(currentUser);
 
+        String token = jwtService.generateToken(currentUser.getEmail()); // Всегда генерируем новый токен
+
         String avatarUrl = currentUser.getAvatarUrl();
         // Если avatarUrl не null и не начинается с /images, добавляем префикс
         if (avatarUrl != null && !avatarUrl.startsWith("/images")) {
@@ -133,7 +135,7 @@ public class AuthService {
         }
         return new UserResponseDto(
             currentUser.getEmail(), 
-            null, // token не нужен при обновлении
+            token, 
             currentUser.getRole(), 
             currentUser.getLoginCount(), 
             avatarUrl

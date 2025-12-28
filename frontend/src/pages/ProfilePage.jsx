@@ -87,7 +87,7 @@ const ProfilePage = () => {
 		).then((result) => {
 			if (result.meta.requestStatus === 'fulfilled') {
 				setIsEditing(false);
-				// dispatch(getUserThunk()); // Не нужно, данные уже обновлены в fulfilled
+				// dispatch(getUserThunk()); // Убираем, данные уже обновлены в fulfilled
 			}
 		});
 	};
@@ -97,7 +97,8 @@ const ProfilePage = () => {
 			<Header title='Профиль' />
 
 			{status === 'loading' && <Loading title='профиль' />}
-			{status === 'success' && (
+			{(status === 'success' ||
+				(status === 'error' && error?.status === 'EMAIL_BUSY')) && (
 				<div
 					style={{
 						maxWidth: '1200px',
@@ -545,7 +546,9 @@ const ProfilePage = () => {
 					</div>
 				</div>
 			)}
-			{status === 'error' && <Errors error={error} />}
+			{status === 'error' && error?.status !== 'EMAIL_BUSY' && (
+				<Errors error={error} />
+			)}
 		</Section>
 	);
 };

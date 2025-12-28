@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import { deleteNewsThunk } from '../../app/features/news/newsThunk';
 import styles from './Card.module.css';
 
-const Card = ({ data, type, onClick, onEdit }) => {
+const Card = ({ data, type, onClick, onEdit, showButtons }) => {
 	const dispatch = useDispatch();
 
 	const handleDelete = (e) => {
@@ -26,7 +26,7 @@ const Card = ({ data, type, onClick, onEdit }) => {
 			<div className={styles.description}>
 				<h3 className={styles.description__title}>{data.title}</h3>
 				{data.text && <p className={styles.description__text}>{data.text}</p>}
-				{type === 'news' && (
+				{type === 'news' && showButtons && (
 					<div className={styles.buttons}>
 						<button className={styles.editButton} onClick={handleEdit}>
 							Редактировать

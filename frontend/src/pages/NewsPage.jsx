@@ -14,9 +14,12 @@ import NewsForm from '../components/NewsForm/NewsForm';
 
 const NewsPage = () => {
 	const { status, newsList, error } = useSelector((state) => state.news);
+	const { userData } = useSelector((state) => state.users);
 	const dispatch = useDispatch();
 	const [showForm, setShowForm] = useState(false);
 	const [editingNews, setEditingNews] = useState(null);
+
+	const isModerator = userData?.role === 'MODERATOR';
 
 	useEffect(() => {
 		if (status === 'inactive') dispatch(getNewsThunk());
@@ -43,12 +46,18 @@ const NewsPage = () => {
 				<List
 					dataList={newsList}
 					renderItem={(data) => (
-						<Card key={data.id} data={data} type='news' onEdit={handleEdit} />
+						<Card
+							key={data.id}
+							data={data}
+							type='news'
+							onEdit={isModerator ? handleEdit : null}
+							showButtons={isModerator}
+						/>
 					)}
 				/>
 			)}
 
-			{!showForm && (
+			{isModerator && !showForm && (
 				<Button
 					type='button'
 					label='Добавить новость'

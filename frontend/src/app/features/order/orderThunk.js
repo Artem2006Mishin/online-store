@@ -6,7 +6,6 @@ export const placeOrderThunk = createAsyncThunk(
 	async (orderData, thunkAPI) => {
 		try {
 			const response = await api.post('/orders', orderData);
-			console.log(response.data);
 			return response.data;
 		} catch (error) {
 			if (error.isNetworkError) {

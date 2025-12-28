@@ -49,3 +49,19 @@ export const updateProfileSchema = yup.object().shape({
 			return ['image/jpeg', 'image/png', 'image/webp'].includes(value[0].type);
 		}),
 });
+
+export const newsSchema = yup.object().shape({
+	title: yup.string().required('Заголовок обязателен'),
+	text: yup.string().required('Текст обязателен'),
+	image: yup
+		.mixed()
+		.nullable()
+		.test('fileSize', 'Файл слишком большой', (value) => {
+			if (!value || value.length === 0) return true;
+			return value[0].size <= 2 * 1024 * 1024;
+		})
+		.test('fileType', 'Неподдерживаемый формат', (value) => {
+			if (!value || value.length === 0) return true;
+			return ['image/jpeg', 'image/png', 'image/webp'].includes(value[0].type);
+		}),
+});

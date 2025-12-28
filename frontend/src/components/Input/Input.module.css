@@ -12,8 +12,19 @@
 
 .filed__input {
 	width: 100%;
-	height: 30px;
 	padding: 5px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
+}
+
+.filed__input[type='text'],
+.filed__input[type='email'],
+.filed__input[type='password'],
+.filed__input[type='url'] {
+	height: 30px;
+}
+
+.filed__input[type='textarea'] {
+	height: 100px;
+	resize: vertical;
 }

@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import styles from './Button.module.css';
 
-const Button = ({ type, label, to }) => {
+const Button = ({ type, label, to, onClick }) => {
 	const navigate = useNavigate();
 	const handleClick = () => {
+		if (onClick) onClick();
 		if (to) navigate(to);
 	};
 

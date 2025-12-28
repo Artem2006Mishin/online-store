@@ -54,7 +54,18 @@ public class AuthService {
             userRepository.save(user);
 
             String token = jwtService.generateToken(userDto.getEmail());
-            return new UserResponseDto(userDto.getEmail(), token);
+            String avatarUrl = user.getAvatarUrl();
+            // Если avatarUrl не null и не начинается с /images, добавляем префикс
+            if (avatarUrl != null && !avatarUrl.startsWith("/images")) {
+                avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
+            }
+            return new UserResponseDto(
+                user.getEmail(), 
+                token, 
+                user.getRole(), 
+                user.getLoginCount(), 
+                avatarUrl
+            );
 
         } catch (BadCredentialsException e) {
             // важно пробросить именно BadCredentialsException,
@@ -81,6 +92,17 @@ public class AuthService {
         user = userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
-        return new UserResponseDto(user.getEmail(), token);
+        String avatarUrl = user.getAvatarUrl();
+        // Если avatarUrl не null и не начинается с /images, добавляем префикс
+        if (avatarUrl != null && !avatarUrl.startsWith("/images")) {
+            avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
+        }
+        return new UserResponseDto(
+            user.getEmail(), 
+            token, 
+            user.getRole(), 
+            user.getLoginCount(), 
+            avatarUrl
+        );
     }
 }

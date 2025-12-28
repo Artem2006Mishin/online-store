@@ -21,11 +21,16 @@ public class ProfileController {
     public ResponseEntity<UserResponse> getProfile() {
         try {
             User user = currentUserService.getCurrentUser();
+            String avatarUrl = user.getAvatarUrl();
+            // Если avatarUrl не null и не начинается с /images, добавляем префикс
+            if (avatarUrl != null && !avatarUrl.startsWith("/images")) {
+                avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
+            }
             return ResponseEntity.ok(new UserResponse(
                     user.getEmail(),
                     user.getRole(),
                     user.getLoginCount(),
-                    user.getAvatarUrl()));
+                    avatarUrl));
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }

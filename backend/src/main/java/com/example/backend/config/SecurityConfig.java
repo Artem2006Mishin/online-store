@@ -43,7 +43,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
             // публичные маршруты
-            .requestMatchers("/auth/**", "/news/**", "/", "/error", "/images/**", "/static/**").permitAll()
+            .requestMatchers("/auth/**", "/news/**", "/", "/error", "/images/**", "/static/**", "/profile").permitAll()
             .requestMatchers("/api/time").permitAll()
 
             // каталог и всё остальное — только авторизованным

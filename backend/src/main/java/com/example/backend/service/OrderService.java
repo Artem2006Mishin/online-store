@@ -53,4 +53,9 @@ public class OrderService {
 
         return orderRepository.save(order);
     }
+
+    public List<Order> getUserOrders() {
+        User user = currentUserService.getCurrentUser();
+        return orderRepository.findByUserOrderByCreatedAtDesc(user);
+    }
 }

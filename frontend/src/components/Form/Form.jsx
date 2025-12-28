@@ -36,19 +36,13 @@ const Form = ({ children, onSubmit, defaultValues, schema }) => {
 			case 'EMAIL_BUSY':
 				methods.setError('email', {
 					type: 'custom',
-					message: error.message || 'Пользователь с таким email уже существует',
-				});
-				break;
-			case 'UNAUTHORIZED':
-				methods.setError('root', {
-					type: 'server',
-					message: error.message || 'Вы не авторизованы. Пожалуйста, войдите снова.',
+					message: error.message,
 				});
 				break;
 			default:
 				methods.setError('root', {
 					type: 'server',
-					message: error.message || 'Произошла неизвестная ошибка',
+					message: 'Произошла неизвестная ошибка',
 				});
 		}
 	}, [error, methods]);

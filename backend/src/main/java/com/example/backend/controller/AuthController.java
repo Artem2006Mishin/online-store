@@ -70,7 +70,7 @@ public class AuthController {
                 User user = userRepository.findByEmail(email)
                         .orElseThrow(() -> new RuntimeException("User not found after register"));
 
-                Path uploadDir = Paths.get("src/main/resources/static/avatars");
+                Path uploadDir = Paths.get("src/main/resources/static/images/avatars");
                 Files.createDirectories(uploadDir);
 
                 String originalName = StringUtils.cleanPath(avatar.getOriginalFilename());
@@ -80,10 +80,19 @@ public class AuthController {
                 Files.copy(avatar.getInputStream(), target,
                         java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-                String url = "/avatars/" + filename;
+                String url = "/images/avatars/" + filename;
 
                 user.setAvatarUrl(url);
-                userRepository.save(user);
+                user = userRepository.save(user);
+                
+                // Обновляем response с актуальными данными пользователя, включая avatarUrl
+                response = new UserResponseDto(
+                    user.getEmail(),
+                    response.getToken(),
+                    user.getRole(),
+                    user.getLoginCount(),
+                    user.getAvatarUrl()
+                );
             }
 
             return ResponseEntity.ok(response);
@@ -109,7 +118,7 @@ public class AuthController {
         try {
             User user = currentUserService.getCurrentUser();
 
-            Path uploadDir = Paths.get("src/main/resources/static/avatars");
+            Path uploadDir = Paths.get("src/main/resources/static/images/avatars");
             Files.createDirectories(uploadDir);
 
             String originalName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -119,7 +128,7 @@ public class AuthController {
             Files.copy(file.getInputStream(), target,
                     java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-            String url = "/avatars/" + filename;
+            String url = "/images/avatars/" + filename;
 
             user.setAvatarUrl(url);
             userRepository.save(user);

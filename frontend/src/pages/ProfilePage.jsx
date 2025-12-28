@@ -1,11 +1,8 @@
 import Header from '../components/Header/Header';
 import Section from '../components/Section/Section';
 import Detail from '../components/Detail/Detail';
-import { useEffect, useState } from 'react';
-import {
-	getUserThunk,
-	updateProfileThunk,
-} from '../app/features/users/usersThunk';
+import { useEffect } from 'react';
+import { getUserThunk } from '../app/features/users/usersThunk';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,51 +11,18 @@ import { tick } from '../app/features/time/timeSlice.js';
 import { resetCart } from '../app/features/users/usersSlice.js';
 import { useNavigate } from 'react-router-dom';
 import { getOrdersThunk } from '../app/features/order/orderThunk.js';
-import Form from '../components/Form/Form';
-import Input from '../components/Input/Input';
-import Button from '../components/Button/Button';
-import { updateProfileSchema } from '../components/schema';
-import { useFormContext } from 'react-hook-form';
-
-// Компонент для отображения root ошибок формы
-const FormErrorDisplay = () => {
-	const {
-		formState: { errors },
-	} = useFormContext();
-
-	if (!errors.root) return null;
-
-	return (
-		<div
-			style={{
-				padding: '15px',
-				backgroundColor: '#fee2e2',
-				border: '1px solid #ef4444',
-				borderRadius: '8px',
-				marginBottom: '20px',
-				color: '#dc2626',
-			}}
-		>
-			{errors.root.message}
-		</div>
-	);
-};
 
 const ProfilePage = () => {
 	const { userData, status, error } = useSelector((state) => state.users);
 	const { serverTime } = useSelector((state) => state.time);
 	const dispatch = useDispatch();
-	const [isEditing, setIsEditing] = useState(false);
 
 	const { getOrdersStatus, ordersList, getOrdersError } = useSelector(
 		(state) => state.orders
 	);
 
 	useEffect(() => {
-		// Загружаем данные только если статус inactive и есть токен
-		if (status === 'inactive' && localStorage.getItem('token')) {
-			dispatch(getUserThunk());
-		}
+		if (status === 'inactive') dispatch(getUserThunk());
 	}, [status, dispatch]);
 
 	useEffect(() => {
@@ -86,42 +50,6 @@ const ProfilePage = () => {
 		localStorage.removeItem('token');
 		dispatch(resetCart());
 		navigate('/auth');
-	};
-
-	const handleEditSubmit = async (data) => {
-		const { confirmPassword: _, avatar, ...rest } = data;
-		const formData = new FormData();
-
-		// Добавляем только измененные поля
-		if (rest.email && rest.email !== userData.email) {
-			formData.append('email', rest.email);
-		}
-		if (rest.password && rest.password.trim() !== '') {
-			formData.append('password', rest.password);
-		}
-		if (avatar && avatar.length > 0) {
-			formData.append('avatar', avatar[0]);
-		}
-
-		// Отправляем только если есть изменения
-		if (
-			formData.has('email') ||
-			formData.has('password') ||
-			formData.has('avatar')
-		) {
-			const result = await dispatch(
-				updateProfileThunk({ userData: formData, isMultipart: true })
-			);
-			if (updateProfileThunk.fulfilled.match(result)) {
-				// Данные уже обновлены в slice через updateProfileThunk.fulfilled
-				setIsEditing(false);
-			} else if (updateProfileThunk.rejected.match(result)) {
-				// Если ошибка, оставляем форму открытой - ошибка будет показана через Form компонент
-				// Не закрываем форму, чтобы пользователь мог увидеть ошибку
-			}
-		} else {
-			setIsEditing(false);
-		}
 	};
 
 	return (
@@ -283,159 +211,36 @@ const ProfilePage = () => {
 						</div>
 					</div>
 
-					{/* Форма редактирования или кнопки управления */}
-					{isEditing ? (
-						<div
+					{/* Кнопка выхода */}
+					<div style={{ marginBottom: '30px', textAlign: 'center' }}>
+						<button
+							onClick={handleClick}
 							style={{
-								backgroundColor: '#ffffff',
-								borderRadius: '20px',
-								padding: '30px',
-								marginBottom: '30px',
-								boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+								padding: '12px 30px',
+								fontSize: '16px',
+								fontWeight: '600',
+								color: '#fff',
+								backgroundColor: '#ef4444',
+								border: 'none',
+								borderRadius: '10px',
+								cursor: 'pointer',
+								transition: 'all 0.3s ease',
+								boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3)',
+							}}
+							onMouseEnter={(e) => {
+								e.target.style.backgroundColor = '#dc2626';
+								e.target.style.transform = 'translateY(-2px)';
+								e.target.style.boxShadow = '0 6px 20px rgba(239, 68, 68, 0.4)';
+							}}
+							onMouseLeave={(e) => {
+								e.target.style.backgroundColor = '#ef4444';
+								e.target.style.transform = 'translateY(0)';
+								e.target.style.boxShadow = '0 4px 15px rgba(239, 68, 68, 0.3)';
 							}}
 						>
-							<h2
-								style={{
-									fontSize: '24px',
-									fontWeight: '700',
-									marginBottom: '25px',
-									color: '#1f2937',
-								}}
-							>
-								Редактирование профиля
-							</h2>
-							<Form
-								onSubmit={handleEditSubmit}
-								defaultValues={{
-									email: userData.email || '',
-									password: '',
-									confirmPassword: '',
-									avatar: null,
-								}}
-								schema={updateProfileSchema}
-							>
-								<FormErrorDisplay />
-								<Input label='Электронная почта' name='email' type='email' />
-								<Input
-									label='Новый пароль (оставьте пустым, если не хотите менять)'
-									name='password'
-									type='password'
-								/>
-								<Input
-									label='Подтверждение пароля'
-									name='confirmPassword'
-									type='password'
-								/>
-								<Input
-									label='Аватар'
-									name='avatar'
-									type='file'
-									accept='image/*'
-								/>
-								<div
-									style={{
-										display: 'flex',
-										gap: '15px',
-										marginTop: '20px',
-									}}
-								>
-									<Button type='submit' label='Сохранить изменения' />
-									<button
-										type='button'
-										onClick={() => setIsEditing(false)}
-										style={{
-											padding: '12px 30px',
-											fontSize: '16px',
-											fontWeight: '600',
-											color: '#6b7280',
-											backgroundColor: '#f3f4f6',
-											border: 'none',
-											borderRadius: '10px',
-											cursor: 'pointer',
-											transition: 'all 0.3s ease',
-										}}
-										onMouseEnter={(e) => {
-											e.target.style.backgroundColor = '#e5e7eb';
-										}}
-										onMouseLeave={(e) => {
-											e.target.style.backgroundColor = '#f3f4f6';
-										}}
-									>
-										Отмена
-									</button>
-								</div>
-							</Form>
-						</div>
-					) : (
-						<div
-							style={{
-								marginBottom: '30px',
-								textAlign: 'center',
-								display: 'flex',
-								gap: '15px',
-								justifyContent: 'center',
-							}}
-						>
-							<button
-								onClick={() => setIsEditing(true)}
-								style={{
-									padding: '12px 30px',
-									fontSize: '16px',
-									fontWeight: '600',
-									color: '#fff',
-									backgroundColor: '#667eea',
-									border: 'none',
-									borderRadius: '10px',
-									cursor: 'pointer',
-									transition: 'all 0.3s ease',
-									boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-								}}
-								onMouseEnter={(e) => {
-									e.target.style.backgroundColor = '#5568d3';
-									e.target.style.transform = 'translateY(-2px)';
-									e.target.style.boxShadow =
-										'0 6px 20px rgba(102, 126, 234, 0.4)';
-								}}
-								onMouseLeave={(e) => {
-									e.target.style.backgroundColor = '#667eea';
-									e.target.style.transform = 'translateY(0)';
-									e.target.style.boxShadow =
-										'0 4px 15px rgba(102, 126, 234, 0.3)';
-								}}
-							>
-								Редактировать профиль
-							</button>
-							<button
-								onClick={handleClick}
-								style={{
-									padding: '12px 30px',
-									fontSize: '16px',
-									fontWeight: '600',
-									color: '#fff',
-									backgroundColor: '#ef4444',
-									border: 'none',
-									borderRadius: '10px',
-									cursor: 'pointer',
-									transition: 'all 0.3s ease',
-									boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3)',
-								}}
-								onMouseEnter={(e) => {
-									e.target.style.backgroundColor = '#dc2626';
-									e.target.style.transform = 'translateY(-2px)';
-									e.target.style.boxShadow =
-										'0 6px 20px rgba(239, 68, 68, 0.4)';
-								}}
-								onMouseLeave={(e) => {
-									e.target.style.backgroundColor = '#ef4444';
-									e.target.style.transform = 'translateY(0)';
-									e.target.style.boxShadow =
-										'0 4px 15px rgba(239, 68, 68, 0.3)';
-								}}
-							>
-								Выйти из аккаунта
-							</button>
-						</div>
-					)}
+							Выйти из аккаунта
+						</button>
+					</div>
 
 					{/* Секция заказов */}
 					<div

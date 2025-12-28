@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Paths;
+
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.example.backend.repository")
 public class BackendApplication {
@@ -20,7 +22,13 @@ public class BackendApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addResourceHandlers(ResourceHandlerRegistry registry) {
+				// Получаем абсолютный путь к директории проекта
+				String projectDir = System.getProperty("user.dir");
+				String imagesPath = Paths.get(projectDir, "src", "main", "resources", "static", "images").toAbsolutePath().toString();
+				
+				// Для файлов, сохраненных во время выполнения (используем абсолютный путь)
 				registry.addResourceHandler("/images/**")
+						.addResourceLocations("file:" + imagesPath + "/")
 						.addResourceLocations("classpath:/static/images/");
 			}
 		};

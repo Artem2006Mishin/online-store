@@ -43,6 +43,12 @@
 	</properties>
 
 	<dependencies>
+
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-actuator</artifactId>
+   </dependency>
+
 		<!-- Для создания веб-приложений (обработка HTTP-запросов, встроенный Tomcat,
     JSON преобразования и т.д.) -->
     <dependency>

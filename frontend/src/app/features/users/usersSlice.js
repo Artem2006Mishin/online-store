@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {authUserThunk, getUserThunk} from "./usersThunk.js";
+import {authUserThunk, getUserThunk, updateProfileThunk} from "./usersThunk.js";
 
 const initialState = {
   userData: {},
@@ -35,9 +35,39 @@ const userSlice = createSlice({
       .addCase(getUserThunk.fulfilled, (state, action) => {
         state.status = 'success';
         state.userData = action.payload;
+        state.error = null;
       })
       .addCase(getUserThunk.rejected, (state, action) => {
-        state.status = 'error';
+        // Если ошибка 401 (неавторизован), сбрасываем статус в inactive
+        if (action.payload?.status === 'UNAUTHORIZED') {
+          state.status = 'inactive';
+          state.userData = {};
+        } else {
+          state.status = 'error';
+        }
+        state.error = action.payload;
+      })
+
+      // updateProfileThunk
+      .addCase(updateProfileThunk.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(updateProfileThunk.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.userData = action.payload;
+        state.error = null;
+      })
+      .addCase(updateProfileThunk.rejected, (state, action) => {
+        // При ошибке UNAUTHORIZED сбрасываем статус (пользователь разлогинен)
+        if (action.payload?.status === 'UNAUTHORIZED') {
+          state.status = 'inactive';
+          state.userData = {};
+        } else {
+          // При других ошибках (например, EMAIL_BUSY) оставляем статус 'success',
+          // чтобы пользователь оставался на странице и мог увидеть ошибку
+          state.status = 'success';
+        }
         state.error = action.payload;
       });
   },

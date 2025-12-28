@@ -3,7 +3,10 @@ import Form from '../Form/Form';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { newsSchema } from '../schema';
-import { createNewsThunk, updateNewsThunk } from '../../app/features/news/newsThunk';
+import {
+	createNewsThunk,
+	updateNewsThunk,
+} from '../../app/features/news/newsThunk';
 
 const NewsForm = ({ onCancel, initialValues, isEditing, newsId }) => {
 	const defaultValues = initialValues || {
@@ -24,12 +27,20 @@ const NewsForm = ({ onCancel, initialValues, isEditing, newsId }) => {
 	};
 
 	return (
-		<Form onSubmit={onSubmit} defaultValues={defaultValues} schema={newsSchema}>
+		<Form
+			onSubmit={onSubmit}
+			defaultValues={defaultValues}
+			schema={newsSchema}
+			initialValues={initialValues}
+		>
 			<Input label='Заголовок' name='title' type='text' />
 			<Input label='Текст' name='text' type='textarea' />
 			<Input label='Изображение' name='image' type='file' accept='image/*' />
 
-			<Button type='submit' label={isEditing ? 'Обновить новость' : 'Создать новость'} />
+			<Button
+				type='submit'
+				label={isEditing ? 'Обновить новость' : 'Создать новость'}
+			/>
 			<Button type='button' label='Отмена' onClick={onCancel} />
 		</Form>
 	);

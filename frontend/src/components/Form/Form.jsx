@@ -4,12 +4,18 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import styles from './Form.module.css';
 
-const Form = ({ children, onSubmit, defaultValues, schema }) => {
+const Form = ({ children, onSubmit, defaultValues, schema, initialValues }) => {
 	const error = useSelector((state) => state.users.error);
 	const methods = useForm({
 		resolver: yupResolver(schema),
-		defaultValues,
+		defaultValues: initialValues || defaultValues,
 	});
+
+	useEffect(() => {
+		if (initialValues) {
+			methods.reset(initialValues);
+		}
+	}, [initialValues, methods]);
 
 	const submitForm = (data) => {
 		onSubmit(data);

@@ -1,5 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getNewsThunk, createNewsThunk, deleteNewsThunk, updateNewsThunk } from './newsThunk.js';
+import {
+	getNewsThunk,
+	createNewsThunk,
+	deleteNewsThunk,
+	updateNewsThunk,
+} from './newsThunk.js';
 
 const newsSlice = createSlice({
 	name: 'news',
@@ -42,7 +47,9 @@ const newsSlice = createSlice({
 			})
 			.addCase(updateNewsThunk.fulfilled, (state, action) => {
 				// Обновляем новость в списке
-				const index = state.newsList.findIndex(news => news.id === action.payload.id);
+				const index = state.newsList.findIndex(
+					(news) => news.id === action.payload.id
+				);
 				if (index !== -1) {
 					state.newsList[index] = action.payload;
 				}

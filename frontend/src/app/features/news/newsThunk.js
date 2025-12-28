@@ -87,42 +87,42 @@ export const deleteNewsThunk = createAsyncThunk(
 );
 
 export const updateNewsThunk = createAsyncThunk(
-  'news/updateNews',
-  async ({ id, data }, thunkAPI) => {
-    try {
-      const formData = new FormData();
+	'news/updateNews',
+	async ({ id, data }, thunkAPI) => {
+		try {
+			const formData = new FormData();
 
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === 'image' && value && value.length > 0) {
-          formData.append('image', value[0]);
-        } else if (key !== 'image') {
-          formData.append(key, value);
-        }
-      });
+			Object.entries(data).forEach(([key, value]) => {
+				if (key === 'image' && value && value.length > 0) {
+					formData.append('image', value[0]);
+				} else if (key !== 'image') {
+					formData.append(key, value);
+				}
+			});
 
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
+			const config = {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			};
 
-      const response = await api.put(`news/update/${id}`, formData, config);
-      return response.data;
-    } catch (error) {
-      if (error.isNetworkError) {
-        return thunkAPI.rejectWithValue({
-          status: 'NETWORK_ERROR',
-          message:
-            'Сервер не доступен. Проверьте соединение или запустите backend.',
-        });
-      }
+			const response = await api.put(`news/update/${id}`, formData, config);
+			return response.data;
+		} catch (error) {
+			if (error.isNetworkError) {
+				return thunkAPI.rejectWithValue({
+					status: 'NETWORK_ERROR',
+					message:
+						'Сервер не доступен. Проверьте соединение или запустите backend.',
+				});
+			}
 
-      return thunkAPI.rejectWithValue({
-        status: 'UNKNOWN_ERROR',
-        message: error.message,
-      });
-    }
-  }
+			return thunkAPI.rejectWithValue({
+				status: 'UNKNOWN_ERROR',
+				message: error.message,
+			});
+		}
+	}
 );
 
 // todo: можно ли обработать общие ошибки в одном месте?

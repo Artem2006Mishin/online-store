@@ -42,7 +42,9 @@ const NewsPage = () => {
 			{status === 'success' && (
 				<List
 					dataList={newsList}
-					renderItem={(data) => <Card key={data.id} data={data} type='news' onEdit={handleEdit} />}
+					renderItem={(data) => (
+						<Card key={data.id} data={data} type='news' onEdit={handleEdit} />
+					)}
 				/>
 			)}
 
@@ -57,11 +59,15 @@ const NewsPage = () => {
 			{showForm && (
 				<NewsForm
 					onCancel={handleCancel}
-					initialValues={editingNews ? {
-						title: editingNews.title,
-						text: editingNews.text,
-						image: null,
-					} : null}
+					initialValues={
+						editingNews
+							? {
+									title: editingNews.title,
+									text: editingNews.text,
+									image: null,
+							  }
+							: null
+					}
 					isEditing={!!editingNews}
 					newsId={editingNews?.id}
 				/>

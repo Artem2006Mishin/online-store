@@ -87,7 +87,7 @@ const ProfilePage = () => {
 		).then((result) => {
 			if (result.meta.requestStatus === 'fulfilled') {
 				setIsEditing(false);
-				dispatch(getUserThunk()); // Перезагрузить данные пользователя
+				// dispatch(getUserThunk()); // Не нужно, данные уже обновлены в fulfilled
 			}
 		});
 	};
@@ -342,7 +342,6 @@ const ProfilePage = () => {
 
 								<Button type='submit' label='Сохранить изменения' />
 							</Form>
-							{status === 'error' && error && <Errors error={error} />}
 						</div>
 					)}
 

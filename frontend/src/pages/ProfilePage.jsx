@@ -599,7 +599,7 @@ const ProfilePage = () => {
 							</thead>
 							<tbody>
 								{allUsersList
-									.filter(user => user.id !== userData?.id)
+									.filter(user => user.email !== userData?.email) // ← По email надёжнее!
 									.map((user) => (
 										<tr key={user.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
 											<td style={{ padding: '15px', color: '#374151' }}>
@@ -607,39 +607,52 @@ const ProfilePage = () => {
 											</td>
 											<td style={{ padding: '15px', textAlign: 'center' }}>
 												<div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-													{/* Кнопка изменения пароля */}
-													<Button
-														type="button"
-														label="Сменить пароль"
+													{/* Изменить пароль */}
+													<button
+														style={{
+															padding: '6px 12px',
+															fontSize: '12px',
+															backgroundColor: '#3b82f6',
+															color: 'white',
+															border: 'none',
+															borderRadius: '6px',
+															cursor: 'pointer'
+														}}
 														onClick={() => {
-															const newPassword = prompt('Новый пароль:');
-															if (newPassword) {
+															const newPassword = prompt(`Новый пароль для ${user.email}:`);
+															if (newPassword && newPassword.length >= 6) {
 																dispatch(changeUserPasswordThunk({ userId: user.id, password: newPassword }));
 															}
 														}}
-														style={{ padding: '8px 16px', fontSize: '12px' }}
-													/>
-													{/* Кнопка удаления */}
-													<Button
-														type="button"
-														label="Удалить"
+													>
+														🔑
+													</button>
+													{/* Удалить */}
+													<button
+														style={{
+															padding: '6px 12px',
+															fontSize: '12px',
+															backgroundColor: '#ef4444',
+															color: 'white',
+															border: 'none',
+															borderRadius: '6px',
+															cursor: 'pointer'
+														}}
 														onClick={() => {
-															if (confirm(`Удалить ${user.email}?`)) {
+															if (confirm(`Удалить пользователя ${user.email}?`)) {
 																dispatch(deleteUserThunk(user.id));
 															}
 														}}
-														style={{
-															padding: '8px 16px',
-															fontSize: '12px',
-															backgroundColor: '#ef4444',
-															color: 'white'
-														}}
-													/>
+													>
+														🗑️
+													</button>
 												</div>
 											</td>
 										</tr>
 									))}
 							</tbody>
+
+
 
 						</table>
 					</div>

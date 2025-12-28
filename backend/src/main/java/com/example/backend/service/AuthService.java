@@ -9,11 +9,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.model.User;
 import com.example.backend.dto.RegisterDto;
 import com.example.backend.dto.UpdateProfileDto;
 import com.example.backend.dto.UserDto;
 import com.example.backend.dto.UserResponseDto;
+import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -61,12 +61,11 @@ public class AuthService {
                 avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
             }
             return new UserResponseDto(
-                user.getEmail(), 
-                token, 
-                user.getRole(), 
-                user.getLoginCount(), 
-                avatarUrl
-            );
+                    user.getEmail(),
+                    token,
+                    user.getRole(),
+                    user.getLoginCount(),
+                    avatarUrl);
 
         } catch (BadCredentialsException e) {
             // важно пробросить именно BadCredentialsException,
@@ -99,12 +98,11 @@ public class AuthService {
             avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
         }
         return new UserResponseDto(
-            user.getEmail(), 
-            token, 
-            user.getRole(), 
-            user.getLoginCount(), 
-            avatarUrl
-        );
+                user.getEmail(),
+                token,
+                user.getRole(),
+                user.getLoginCount(),
+                avatarUrl);
     }
 
     @Transactional
@@ -134,11 +132,24 @@ public class AuthService {
             avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
         }
         return new UserResponseDto(
-            currentUser.getEmail(), 
-            token, 
-            currentUser.getRole(), 
-            currentUser.getLoginCount(), 
-            avatarUrl
-        );
+                currentUser.getEmail(),
+                token,
+                currentUser.getRole(),
+                currentUser.getLoginCount(),
+                avatarUrl);
     }
+
+    public void updatePassword(User user, String newPassword) {
+        if (newPassword == null || newPassword.isEmpty()) {
+            throw new RuntimeException("Пароль не может быть пустым");
+        }
+
+        // Хешируем новый пароль
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(hashedPassword);
+
+        // Сохраняем
+        userRepository.save(user);
+    }
+
 }

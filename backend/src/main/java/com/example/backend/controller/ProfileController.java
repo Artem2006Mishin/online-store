@@ -1,25 +1,31 @@
 package com.example.backend.controller;
 
-import com.example.backend.model.User;
-import com.example.backend.repository.UserRepository;
-import com.example.backend.service.CurrentUserService;
-import com.example.backend.service.AuthService;
-import com.example.backend.dto.UpdateProfileDto;
-import com.example.backend.dto.UserResponseDto;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.backend.dto.UpdateProfileDto;
+import com.example.backend.dto.UserResponseDto;
+import com.example.backend.model.User;
+import com.example.backend.repository.UserRepository;
+import com.example.backend.service.AuthService;
+import com.example.backend.service.CurrentUserService;
 
 @RestController
 @RequestMapping("")
@@ -29,27 +35,29 @@ public class ProfileController {
     private final AuthService authService;
     private final UserRepository userRepository;
 
-    public ProfileController(CurrentUserService currentUserService, AuthService authService, UserRepository userRepository) {
+    public ProfileController(CurrentUserService currentUserService, AuthService authService,
+            UserRepository userRepository) {
         this.currentUserService = currentUserService;
         this.authService = authService;
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<UserResponse> getProfile() {
+    @GetMapping("/profile") // ← ОДИН эндпоинт для всего профиля
+    public ResponseEntity<?> getProfile() {
         try {
             User user = currentUserService.getCurrentUser();
             String avatarUrl = user.getAvatarUrl();
-            // Если avatarUrl не null и не начинается с /images, добавляем префикс
             if (avatarUrl != null && !avatarUrl.startsWith("/images")) {
                 avatarUrl = avatarUrl.startsWith("/") ? "/images" + avatarUrl : "/images/" + avatarUrl;
             }
-            return ResponseEntity.ok(new UserResponse(
-                    user.getEmail(),
-                    null,
-                    user.getRole(),
-                    user.getLoginCount(),
-                    avatarUrl));
+
+            // Возвращаем ОБА: текущий пользователь + всех пользователей
+            Map<String, Object> response = new HashMap<>();
+            response.put("currentUser", new UserResponse(
+                    user.getEmail(), null, user.getRole(), user.getLoginCount(), avatarUrl));
+            response.put("allUsers", userRepository.findAll());
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(401).build();
         }
@@ -86,12 +94,11 @@ public class ProfileController {
 
                 // Обновляем response с новым avatarUrl
                 response = new UserResponseDto(
-                    currentUser.getEmail(),
-                    response.getToken(),
-                    currentUser.getRole(),
-                    currentUser.getLoginCount(),
-                    currentUser.getAvatarUrl()
-                );
+                        currentUser.getEmail(),
+                        response.getToken(),
+                        currentUser.getRole(),
+                        currentUser.getLoginCount(),
+                        currentUser.getAvatarUrl());
             }
 
             return ResponseEntity.ok(response);
@@ -104,6 +111,37 @@ public class ProfileController {
             return ResponseEntity.status(500).body("Avatar upload failed: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Update failed: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/profile/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            if (id.equals(currentUserService.getCurrentUser().getId())) {
+                return ResponseEntity.badRequest().body("Нельзя удалить себя");
+            }
+            userRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ошибка удаления: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/profile/users/{id}/password")
+    public ResponseEntity<?> changeUserPassword(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            if (id.equals(currentUserService.getCurrentUser().getId())) {
+                return ResponseEntity.badRequest().body("Нельзя менять свой пароль через админку");
+            }
+            String newPassword = body.get("password");
+            User user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                authService.updatePassword(user, newPassword); // твоя логика хеширования
+                return ResponseEntity.ok().body("Пароль изменён");
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ошибка: " + e.getMessage());
         }
     }
 

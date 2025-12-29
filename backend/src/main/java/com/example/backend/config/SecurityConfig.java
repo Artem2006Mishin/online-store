@@ -43,8 +43,14 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
             // публичные маршруты
-            .requestMatchers("/auth/**", "/news/**", "/", "/error", "/images/**", "/static/**", "/profile").permitAll()
+            .requestMatchers("/auth/**", "/", "/error", "/images/**", "/static/**", "/profile").permitAll()
             .requestMatchers("/api/time").permitAll()
+            
+            // News endpoints - GET доступно всем, управление только для MODERATOR и ADMIN
+            .requestMatchers(HttpMethod.GET, "/news/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/news/create").hasAnyRole("MODERATOR", "ADMIN")
+            .requestMatchers(HttpMethod.POST, "/news/update/**").hasAnyRole("MODERATOR", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/news/delete/**").hasAnyRole("MODERATOR", "ADMIN")
 
             // Product management endpoints - только для ADMIN
             .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")

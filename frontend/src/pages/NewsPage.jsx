@@ -20,6 +20,8 @@ const NewsPage = () => {
 	const [editingNews, setEditingNews] = useState(null);
 
 	const isModerator = userData?.role === 'MODERATOR';
+	const isAdmin = userData?.role === 'ADMIN';
+	const canEditNews = isModerator || isAdmin;
 
 	useEffect(() => {
 		if (status === 'inactive') dispatch(getNewsThunk());
@@ -50,14 +52,14 @@ const NewsPage = () => {
 							key={data.id}
 							data={data}
 							type='news'
-							onEdit={isModerator ? handleEdit : null}
-							showButtons={isModerator}
+							onEdit={canEditNews ? handleEdit : null}
+							showButtons={canEditNews}
 						/>
 					)}
 				/>
 			)}
 
-			{isModerator && !showForm && (
+			{canEditNews && !showForm && (
 				<Button
 					type='button'
 					label='Добавить новость'

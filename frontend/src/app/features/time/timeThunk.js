@@ -5,7 +5,8 @@ export const getTimeThunk = createAsyncThunk(
   'time/getTime',
   async (payload, thunkAPI) => {
     try {
-      const response = await api.get(`/api/time`);
+  // request that should not include Authorization header for anonymous users
+  const response = await api.get(`/api/time`, { skipAuth: true });
       return response.data;
     } catch (error) {
       if (error.isNetworkError) {

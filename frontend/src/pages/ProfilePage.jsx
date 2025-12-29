@@ -6,7 +6,8 @@ import {
 	getUserThunk,
 	updateProfileThunk,
 	deleteUserThunk,
-	changeUserPasswordThunk
+	changeUserPasswordThunk,
+	changeUserRoleThunk
 } from '../app/features/users/usersThunk.js';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
@@ -32,14 +33,7 @@ const ProfilePage = () => {
 
 	const isAdmin = userData?.role === 'ADMIN';
 
-	console.log('🔍 ProfilePage DEBUG:', {
-		status,
-		userData,
-		allUsersList,
-		allUsersListLength: allUsersList?.length,
-		hasUsers: allUsersList?.length > 0,
-		userDataId: userData?.id
-	});
+	// ProfilePage debug removed
 
 	const { serverTime } = useSelector((state) => state.time);
 	const dispatch = useDispatch();
@@ -167,18 +161,11 @@ const ProfilePage = () => {
 											src={`http://localhost:8080${userData.avatarUrl}`}
 											alt='аватар'
 											onError={(e) => {
-												console.error(
-													'Ошибка загрузки аватара. URL:',
-													`http://localhost:8080${userData.avatarUrl}`
-												);
-												console.error('Данные пользователя:', userData);
+													// avatar load error
 												e.target.style.display = 'none';
 											}}
 											onLoad={() => {
-												console.log(
-													'Аватар успешно загружен:',
-													`http://localhost:8080${userData.avatarUrl}`
-												);
+													// avatar loaded
 											}}
 										/>
 									</div>
@@ -609,26 +596,25 @@ const ProfilePage = () => {
 											</td>
 											<td style={{ padding: '15px', textAlign: 'center' }}>
 												<div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-													{/* Изменить пароль */}
-													<button
+													{/* Изменить роль */}
+													<select
 														style={{
 															padding: '6px 12px',
 															fontSize: '12px',
-															backgroundColor: '#3b82f6',
-															color: 'white',
-															border: 'none',
-															borderRadius: '6px',
-															cursor: 'pointer'
+															borderRadius: '6px'
 														}}
-														onClick={() => {
-															const newPassword = prompt(`Новый пароль для ${user.email}:`);
-															if (newPassword && newPassword.length >= 6) {
-																dispatch(changeUserPasswordThunk({ userId: user.id, password: newPassword }));
+														value={user.role}
+														onChange={(e) => {
+															const newRole = e.target.value;
+															if (confirm(`Изменить роль ${user.email} на ${newRole}?`)) {
+																dispatch(changeUserRoleThunk({ userId: user.id, role: newRole }));
 															}
 														}}
 													>
-														🔑
-													</button>
+														<option value='USER'>USER</option>
+														<option value='MODERATOR'>MODERATOR</option>
+														<option value='ADMIN'>ADMIN</option>
+													</select>
 													{/* Удалить */}
 													<button
 														style={{

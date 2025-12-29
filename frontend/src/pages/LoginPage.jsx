@@ -3,7 +3,7 @@ import Form from '../components/Form/Form';
 import Button from '../components/Button/Button';
 import Loading from '../components/Loading/Loading';
 import { loginSchema } from '../components/schema';
-import {authUserThunk} from '../app/features/users/usersThunk';
+import {authUserThunk, getUserThunk} from '../app/features/users/usersThunk';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -16,7 +16,12 @@ const LoginPage = () => {
 
 	const dispatch = useDispatch();
 	const onSubmit = data => {
-		dispatch(authUserThunk({ url: 'login', userData: data }));
+				dispatch(authUserThunk({ url: 'login', userData: data })).then((res) => {
+					if (res.meta.requestStatus === 'fulfilled') {
+						// fetch profile (includes allUsers for admin)
+						dispatch(getUserThunk());
+					}
+				});
 	};
 
 	const navigate = useNavigate();

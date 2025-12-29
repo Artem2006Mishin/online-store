@@ -33,13 +33,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod()))
             return true;
 
-        // публичные эндпоинты (каталог НЕ публичный)
-        return path.startsWith("/auth/")
-                || path.startsWith("/news/")
-                || path.equals("/")
-                || path.equals("/error")
-                || path.startsWith("/images/")
-                || path.startsWith("/static/");
+    // публичные эндпоинты (каталог НЕ публичный)
+    return path.startsWith("/auth/")
+        || path.equals("/")
+        || path.equals("/error")
+        || path.startsWith("/images/")
+        || path.startsWith("/static/");
     }
 
     @Override

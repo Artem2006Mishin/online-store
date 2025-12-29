@@ -145,6 +145,28 @@ public class ProfileController {
         }
     }
 
+    @PutMapping("/profile/users/{id}/role")
+    public ResponseEntity<?> changeUserRole(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            if (id.equals(currentUserService.getCurrentUser().getId())) {
+                return ResponseEntity.badRequest().body("Нельзя менять свою роль через админку");
+            }
+            String newRole = body.get("role");
+            if (newRole == null || newRole.isEmpty()) {
+                return ResponseEntity.badRequest().body("Роль не указана");
+            }
+            User user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                user.setRole(newRole);
+                userRepository.save(user);
+                return ResponseEntity.ok().body("Роль изменена");
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Ошибка: " + e.getMessage());
+        }
+    }
+
     public record UserResponse(String email,
             String token,
             String role,

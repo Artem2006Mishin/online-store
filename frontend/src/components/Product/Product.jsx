@@ -3,7 +3,13 @@ import style from './Product.module.css';
 const Product = ({data, onClick, isInCart}) => {
   return (
     <div className={style.productCard} style={{backgroundColor: isInCart ? 'grey' : "white"}}>
-      <img src={`http://localhost:8080${data.imageURL}`} alt='img'/>
+      {data.imageURL ? (
+        <img src={`http://localhost:8080${data.imageURL}`} alt='img'/>
+      ) : (
+        <div style={{width: '100%', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f3f4f6'}}>
+          Нет изображения
+        </div>
+      )}
 
       <div className={style.productInfo}>
         <h3>{data.name}</h3>

@@ -3,8 +3,9 @@ import {
   authUserThunk,
   getUserThunk,
   updateProfileThunk,
-  deleteUserThunk,      // ← НОВОЕ
-  changeUserPasswordThunk // ← НОВОЕ
+  deleteUserThunk,
+  changeUserPasswordThunk,
+  changeUserRoleThunk
 } from './usersThunk.js';
 
 const initialState = {
@@ -83,6 +84,19 @@ const userSlice = createSlice({
         // Пароль не показываем в UI
       })
       .addCase(changeUserPasswordThunk.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.payload;
+      })
+      .addCase(changeUserRoleThunk.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(changeUserRoleThunk.fulfilled, (state, action) => {
+        state.status = 'success';
+        const { userId, role } = action.payload;
+        const idx = state.allUsersList.findIndex(u => u.id === userId);
+        if (idx !== -1) state.allUsersList[idx].role = role;
+      })
+      .addCase(changeUserRoleThunk.rejected, (state, action) => {
         state.status = 'error';
         state.error = action.payload;
       });

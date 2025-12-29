@@ -87,7 +87,7 @@ public class ProductController {
       String url = "/images/catalog/" + filename;
       product.setImageURL(url);
     } else {
-      product.setImageURL(""); // Set empty string if no image
+      product.setImageURL(null); // no image
     }
 
     product.setIsCart(false);

@@ -15,8 +15,7 @@ export const authUserThunk = createAsyncThunk(
       } else {
         response = await api.post(`auth/${url}`, userData, { skipAuth: true });
       }
-      console.log(response.data);
-      localStorage.setItem('token', response.data.token);
+  localStorage.setItem('token', response.data.token);
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -95,8 +94,7 @@ export const updateProfileThunk = createAsyncThunk(
       } else {
         response = await api.put('/profile', userData);
       }
-      console.log(response.data);
-      return response.data;
+  return response.data;
     } catch (error) {
       if (error.response) {
         if (error.response.status === 409) {
@@ -145,6 +143,18 @@ export const changeUserPasswordThunk = createAsyncThunk(
     try {
       await api.put(`/profile/users/${userId}/password`, { password });
       return { userId, password };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const changeUserRoleThunk = createAsyncThunk(
+  'users/changeUserRole',
+  async ({ userId, role }, thunkAPI) => {
+    try {
+      await api.put(`/profile/users/${userId}/role`, { role });
+      return { userId, role };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }

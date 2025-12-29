@@ -16,7 +16,6 @@ const OrderPage = () => {
       const orderData = {
         productIds: items.map((item) => item.productId)
       };
-      console.log(orderData);
 
       dispatch(placeOrderThunk(orderData));
       dispatch(clearCart());

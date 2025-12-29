@@ -28,7 +28,7 @@ export const createNewsThunk = createAsyncThunk(
 	'news/createNews',
 	async (newsData, thunkAPI) => {
 		try {
-			console.log(newsData);
+			// prepare formData
 
 			const formData = new FormData();
 

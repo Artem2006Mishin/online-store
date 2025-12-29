@@ -29,11 +29,14 @@ export const createProductThunk = createAsyncThunk(
     try {
       const formData = new FormData();
       Object.entries(productData).forEach(([key, value]) => {
-        if (value) formData.append(key, value);
+        if (key === 'image' && value && value.length > 0) {
+          formData.append('image', value[0]);
+        } else if (value !== undefined && value !== null && value !== '') {
+          formData.append(key, value);
+        }
       });
-      const response = await api.post("/products", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      // don't set Content-Type header; browser will set the correct multipart boundary
+      const response = await api.post("/products", formData);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -47,11 +50,13 @@ export const updateProductThunk = createAsyncThunk(
     try {
       const formData = new FormData();
       Object.entries(productData).forEach(([key, value]) => {
-        if (value) formData.append(key, value);
+        if (key === 'image' && value && value.length > 0) {
+          formData.append('image', value[0]);
+        } else if (value !== undefined && value !== null && value !== '') {
+          formData.append(key, value);
+        }
       });
-      const response = await api.put(`/products/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      const response = await api.put(`/products/${id}`, formData);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

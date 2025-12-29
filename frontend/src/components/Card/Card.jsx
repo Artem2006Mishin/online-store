@@ -23,6 +23,7 @@ const Card = ({ data, type, onClick, onEdit, showButtons }) => {
 					src={`http://localhost:8080${data.imageURL}`}
 					alt={data.title}
 					onClick={onClick}
+					onError={(e) => { e.target.style.display = 'none'; }}
 				/>
 			) : (
 				<div

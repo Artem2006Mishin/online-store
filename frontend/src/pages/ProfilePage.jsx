@@ -30,6 +30,8 @@ const ProfilePage = () => {
 		allUsersList  // ← Только это!
 	} = useSelector((state) => state.users);
 
+	const isAdmin = userData?.role === 'ADMIN';
+
 	console.log('🔍 ProfilePage DEBUG:', {
 		status,
 		userData,
@@ -567,8 +569,8 @@ const ProfilePage = () => {
 			{status === 'error' && error?.status !== 'EMAIL_BUSY' && (
 				<Errors error={error} />
 			)}
-			{/* ТАБЛИЦА ПОСЛЕ ВСЕГО, ПЕРЕД </Section> */}
-			{status === 'success' && (
+			{/* ТАБЛИЦА ПОСЛЕ ВСЕГО, ПЕРЕД </Section> - только для ADMIN */}
+			{status === 'success' && isAdmin && (
 				<div style={{
 					backgroundColor: '#ffffff',
 					borderRadius: '20px',

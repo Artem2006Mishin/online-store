@@ -46,6 +46,16 @@ public class SecurityConfig {
             .requestMatchers("/auth/**", "/news/**", "/", "/error", "/images/**", "/static/**", "/profile").permitAll()
             .requestMatchers("/api/time").permitAll()
 
+            // Product management endpoints - только для ADMIN
+            .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/products/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/products/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/products").hasRole("ADMIN") // GET all products - только для ADMIN
+            
+            // GET products by category - доступно всем авторизованным
+            .requestMatchers(HttpMethod.GET, "/products/category/**").authenticated()
+            .requestMatchers(HttpMethod.GET, "/products/by-name").authenticated()
+
             // каталог и всё остальное — только авторизованным
             .anyRequest().authenticated())
         .authenticationProvider(authenticationProvider())

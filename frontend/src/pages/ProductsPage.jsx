@@ -24,9 +24,12 @@ const ProductsPage = () => {
   const { name } = useParams();
   const { status, productsList, error, allProductsList } = useSelector((state) => state.products);
   const { categoriesList } = useSelector((state) => state.categories);
+  const { userData } = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
-  // Панель управления (для всех пользователей пока)
+  const isAdmin = userData?.role === 'ADMIN';
+  
+  // Панель управления (только для ADMIN)
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -100,14 +103,16 @@ const ProductsPage = () => {
 
       {status === 'success' && (
         <>
-          {/* Кнопка панели управления - для всех */}
-          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <Button
-              type="button"
-              label={showAdminPanel ? 'Скрыть управление' : 'Управление товарами'}
-              onClick={() => setShowAdminPanel(!showAdminPanel)}
-            />
-          </div>
+          {/* Кнопка панели управления - только для ADMIN */}
+          {isAdmin && (
+            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+              <Button
+                type="button"
+                label={showAdminPanel ? 'Скрыть управление' : 'Управление товарами'}
+                onClick={() => setShowAdminPanel(!showAdminPanel)}
+              />
+            </div>
+          )}
 
           {/* Список товаров для пользователей */}
           <List

@@ -16,12 +16,15 @@ const LoginPage = () => {
 
 	const dispatch = useDispatch();
 	const onSubmit = data => {
-				dispatch(authUserThunk({ url: 'login', userData: data })).then((res) => {
-					if (res.meta.requestStatus === 'fulfilled') {
-						// fetch profile (includes allUsers for admin)
-						dispatch(getUserThunk());
-					}
-				});
+					dispatch(authUserThunk({ url: 'login', userData: data })).then(async (res) => {
+						if (res.meta.requestStatus === 'fulfilled') {
+							// fetch profile (includes allUsers for admin) and then navigate
+							const profileRes = await dispatch(getUserThunk());
+							if (profileRes.meta.requestStatus === 'fulfilled') {
+								navigate('/profile', { replace: true });
+							}
+						}
+					});
 	};
 
 	const navigate = useNavigate();

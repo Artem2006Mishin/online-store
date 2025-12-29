@@ -626,9 +626,12 @@ const ProfilePage = () => {
 															borderRadius: '6px',
 															cursor: 'pointer'
 														}}
-														onClick={() => {
+														onClick={async () => {
 															if (confirm(`Удалить пользователя ${user.email}?`)) {
-																dispatch(deleteUserThunk(user.id));
+																const res = await dispatch(deleteUserThunk(user.id));
+																if (res.meta.requestStatus !== 'fulfilled') {
+																	alert('Ошибка удаления: ' + (res.payload || res.error?.message || 'unknown'));
+																}
 															}
 														}}
 													>

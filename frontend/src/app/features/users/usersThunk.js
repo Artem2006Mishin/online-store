@@ -21,19 +21,19 @@ export const authUserThunk = createAsyncThunk(
       if (error.response) {
         if (error.response.status === 401) {
           return thunkAPI.rejectWithValue({
-            status: 'INVALIDPASSWORD',
+            status: 'INVALID_PASSWORD',
             message: 'Неверный пароль'
           });
         }
         if (error.response.status === 404) {
           return thunkAPI.rejectWithValue({
-            status: 'EMAILNOTFOUND',
+            status: 'EMAIL_NOT_FOUND',
             message: `email ${error.response.data.email}`
           });
         }
         if (error.response.status === 409) {
           return thunkAPI.rejectWithValue({
-            status: 'EMAILBUSY',
+            status: 'EMAIL_BUSY',
             message: `email ${error.response.data.email}`
           });
         }
@@ -81,8 +81,9 @@ export const getUserThunk = createAsyncThunk(
 
 export const updateProfileThunk = createAsyncThunk(
   'users/updateProfile',
-  async (userData, { isMultipart }, thunkAPI) => {
+  async (payload, thunkAPI) => {
     try {
+      const { userData, isMultipart } = payload || {};
       let response;
       if (isMultipart) {
         const config = {
@@ -94,7 +95,7 @@ export const updateProfileThunk = createAsyncThunk(
       } else {
         response = await api.put('/profile', userData);
       }
-  return response.data;
+      return response.data;
     } catch (error) {
       if (error.response) {
         if (error.response.status === 409) {

@@ -81,5 +81,10 @@ public class Product {
   public void setCategory(Category category) {
     this.category = category;
   }
+
+  // Getter for categoryId to include in JSON response
+  public Long getCategoryId() {
+    return category != null ? category.getId() : null;
+  }
 }
 

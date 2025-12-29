@@ -8,6 +8,7 @@ import {
   updateProductThunk,
   deleteProductThunk
 } from '../app/features/products/productsThunk';
+import { getCategoriesThunk } from '../app/features/categories/categoriesThunk';
 import Loading from '../components/Loading/Loading';
 import Errors from '../components/Errors/Error';
 import List from '../components/List/List';
@@ -15,11 +16,14 @@ import Product from '../components/Product/Product';
 import { addToCart } from "../app/features/cart/cartSlice.js";
 import Button from '../components/Button/Button';
 import Input from '../components/Input/Input';
+import Select from '../components/Select/Select';
 import Form from '../components/Form/Form';
+import { productSchema } from '../components/schema';
 
 const ProductsPage = () => {
   const { name } = useParams();
   const { status, productsList, error, allProductsList } = useSelector((state) => state.products);
+  const { categoriesList } = useSelector((state) => state.categories);
   const dispatch = useDispatch();
 
   // Панель управления (для всех пользователей пока)
@@ -31,10 +35,15 @@ const ProductsPage = () => {
   }, [name, dispatch]);
 
   useEffect(() => {
-    if (showAdminPanel && allProductsList.length === 0) {
-      dispatch(getAllProductsThunk());
+    if (showAdminPanel) {
+      if (allProductsList.length === 0) {
+        dispatch(getAllProductsThunk());
+      }
+      if (categoriesList.length === 0) {
+        dispatch(getCategoriesThunk());
+      }
     }
-  }, [showAdminPanel, allProductsList.length, dispatch]);
+  }, [showAdminPanel, allProductsList.length, categoriesList.length, dispatch]);
 
   const cartItems = useSelector(state => state.cart.items);
   const cartIds = new Set(cartItems.map(item => item.productId));
@@ -46,12 +55,22 @@ const ProductsPage = () => {
   };
 
   const handleCreateProduct = async (data) => {
-    await dispatch(createProductThunk(data));
+    // Ensure categoryId is sent as a string
+    const productData = {
+      ...data,
+      categoryId: data.categoryId || ''
+    };
+    await dispatch(createProductThunk(productData));
     dispatch(getAllProductsThunk());
   };
 
   const handleUpdateProduct = async (data) => {
-    await dispatch(updateProductThunk({ id: editingProduct.id, productData: data }));
+    // Ensure categoryId is sent as a string
+    const productData = {
+      ...data,
+      categoryId: data.categoryId || ''
+    };
+    await dispatch(updateProductThunk({ id: editingProduct.id, productData }));
     dispatch(getAllProductsThunk());
     setEditingProduct(null);
   };
@@ -63,10 +82,10 @@ const ProductsPage = () => {
   };
 
   const defaultValues = editingProduct ? {
-    name: editingProduct.name,
-    price: editingProduct.price,
+    name: editingProduct.name || '',
+    price: editingProduct.price || '',
     image: null,
-    categoryId: editingProduct.categoryId
+    categoryId: editingProduct.categoryId ? String(editingProduct.categoryId) : ''
   } : {
     name: '',
     price: '',
@@ -126,11 +145,17 @@ const ProductsPage = () => {
             <Form
               onSubmit={editingProduct ? handleUpdateProduct : handleCreateProduct}
               defaultValues={defaultValues}
+              schema={productSchema}
             >
               <Input label="Название" name="name" type="text" required />
               <Input label="Цена" name="price" type="number" step="0.01" required />
               <Input label="Фото" name="image" type="file" accept="image/*" />
-              <Input label="ID категории" name="categoryId" type="number" />
+              <Select 
+                label="Категория" 
+                name="categoryId" 
+                options={categoriesList.map(cat => ({ value: cat.id, label: cat.title }))}
+                placeholder="Выберите категорию"
+              />
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 {editingProduct && (
                   <Button

@@ -65,3 +65,29 @@ export const newsSchema = yup.object().shape({
 			return ['image/jpeg', 'image/png', 'image/webp'].includes(value[0].type);
 		}),
 });
+
+export const productSchema = yup.object().shape({
+	name: yup.string().required('Название обязательно'),
+	price: yup
+		.number()
+		.typeError('Цена должна быть числом')
+		.positive('Цена должна быть положительной')
+		.required('Цена обязательна'),
+	image: yup
+		.mixed()
+		.nullable()
+		.test('fileSize', 'Файл слишком большой', (value) => {
+			if (!value || value.length === 0) return true;
+			return value[0].size <= 5 * 1024 * 1024; // 5MB
+		})
+		.test('fileType', 'Неподдерживаемый формат', (value) => {
+			if (!value || value.length === 0) return true;
+			return ['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(value[0].type);
+		}),
+	categoryId: yup
+		.string()
+		.required('Категория обязательна')
+		.test('isNotEmpty', 'Выберите категорию', (value) => {
+			return value !== '' && value !== null && value !== undefined;
+		}),
+});
